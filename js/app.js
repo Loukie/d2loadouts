@@ -174,13 +174,17 @@
   // user can experiment to find supers/abilities.
 
   const ABILITY_FIELDS = [
-    { key: "super_ability", label: "Super" },
     { key: "grenade_ability", label: "Grenade" },
-    { key: "melee_ability", label: "Melee" },
     { key: "movement_ability", label: "Jump / movement" },
     { key: "class_ability", label: "Class ability" },
+    { key: "super_ability", label: "Super" },
+    { key: "melee_ability", label: "Melee" },
   ];
   const ABILITY_MAX = 40;
+
+  // Super and melee are fixed by the subclass's selected tree. Every other value
+  // breaks the character, and the config can't switch trees, so these are locked.
+  const LOCKED_ABILITIES = new Set(["super_ability", "melee_ability"]);
 
   // Confirmed index -> named option maps, discovered by in-game testing.
   // As we verify more (grenade/melee/jump/super), add them here and they turn
@@ -244,16 +248,36 @@
     const note = document.createElement("div");
     note.className = "hint";
     note.style.marginBottom = "10px";
-    note.innerHTML = "⚠️ Experimental. The default numbers already work — leave them unless you're hunting a specific super. " +
-      "Most other values <strong>break the character and drop you into a stuck loading screen</strong>. " +
-      "If that happens: Discard changes (or delete settings.json and relaunch) to recover.";
+    note.innerHTML = "Grenade, Jump and Class ability are yours to pick. " +
+      "Super and Melee are locked to the subclass's tree (changing them breaks the game). " +
+      "Anything still shown as a number stepper is unmapped — safe to experiment, but off-values can break the boot " +
+      "(recover with Discard changes, or delete settings.json and relaunch).";
     panel.appendChild(note);
 
     for (const f of ABILITY_FIELDS) {
+      if (LOCKED_ABILITIES.has(f.key)) { panel.appendChild(renderLockedRow(char, f)); continue; }
       const preset = resolvePreset(f.key, char);
       panel.appendChild(preset ? renderPresetRow(char, f, preset.options, preset.confirmed) : renderStepperRow(char, f));
     }
     return panel;
+  }
+
+  /** Read-only row for a tree-bound ability (super / melee) that can't be changed safely. */
+  function renderLockedRow(char, f) {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:10px;align-items:center;margin-bottom:6px;opacity:0.75";
+    const lbl = abilityLabel(f, char);
+    lbl.style.width = "150px";
+    const val = document.createElement("span");
+    val.className = "slot-current";
+    val.innerHTML = `<code>${escapeHtml(String(char[f.key]))}</code>`;
+    const note = document.createElement("span");
+    note.className = "hint";
+    note.textContent = "🔒 set by the subclass's tree — changing it breaks the game";
+    row.appendChild(lbl);
+    row.appendChild(val);
+    row.appendChild(note);
+    return row;
   }
 
   function abilityLabel(f, char) {
