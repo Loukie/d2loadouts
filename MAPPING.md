@@ -51,7 +51,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Nightstalker | Spike ✅ | Vortex ✅ | Voidwall ✅ |
 | Dawnblade | Fusion ✅ | Solar ✅ | Firebolt ✅ |
 | Stormcaller | Storm ✅ | Arcbolt ✅ | Pulse ✅ |
-| Voidwalker | Vortex ⚠️ | Scatter ⚠️ | Axion Bolt ⚠️ |
+| Voidwalker | Scatter ✅ | Vortex ✅ | Axion Bolt ✅ |
 
 ## Supers — `super_ability` (per subclass)
 
@@ -65,7 +65,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Nightstalker | Shadowshot ✅ | Spectral Blades ✅ |
 | Dawnblade | Daybreak ✅ | Well of Radiance ✅ |
 | Stormcaller | Stormtrance ✅ | Chaos Reach ✅ |
-| Voidwalker | Nova Bomb ⚠️ | Nova Warp ⚠️ |
+| Voidwalker | Nova Bomb ✅ | Nova Warp ✅ |
 
 ## How to verify (quick loop)
 
