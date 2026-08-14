@@ -45,7 +45,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | --- | --- | --- | --- |
 | Striker | Lightning ✅ | Flashbang ✅ | Pulse ✅ |
 | Sunbreaker | Fusion ✅ | Incendiary ✅ | Thermite ✅ |
-| Sentinel | Magnetic ⚠️ | Voidwall ⚠️ | Suppressor ⚠️ |
+| Sentinel | Suppressor ✅ | Magnetic ✅ | Voidwall ✅ |
 | Gunslinger | Tripmine ✅ | Incendiary ✅ | Swarm ✅ |
 | Arcstrider | Arcbolt ⚠️ | Flux ⚠️ | Skip ⚠️ |
 | Nightstalker | Spike ⚠️ | Voidwall ⚠️ | Vortex ⚠️ |

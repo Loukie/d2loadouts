@@ -222,8 +222,8 @@
       "0XB920CE9A": [ // Sunbreaker (Titan / Solar) — confirmed in-game
         { value: 7, label: "Fusion Grenade" }, { value: 8, label: "Incendiary Grenade" }, { value: 9, label: "Thermite Grenade" },
       ],
-      "0XC99B33E9": [ // Sentinel (Titan / Void)
-        { value: 7, label: "Magnetic Grenade" }, { value: 8, label: "Voidwall Grenade" }, { value: 9, label: "Suppressor Grenade" },
+      "0XC99B33E9": [ // Sentinel (Titan / Void) — grenades confirmed in-game
+        { value: 7, label: "Suppressor Grenade" }, { value: 8, label: "Magnetic Grenade" }, { value: 9, label: "Voidwall Grenade" },
       ],
       "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar) — confirmed in-game
         { value: 7, label: "Tripmine Grenade" }, { value: 8, label: "Incendiary Grenade" }, { value: 9, label: "Swarm Grenade" },
@@ -258,7 +258,7 @@
     },
   };
   const SUBCLASS_PRESET_CONFIRMED = {
-    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true }, // Striker, Gunslinger, Sunbreaker confirmed
+    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true }, // + Sentinel
     super_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true }, // Striker, Gunslinger, Sunbreaker confirmed
   };
 
