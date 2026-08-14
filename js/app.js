@@ -144,6 +144,12 @@
       };
       host.appendChild(btn);
     }
+
+    const note = document.createElement("span");
+    note.className = "hint";
+    note.style.marginLeft = "10px";
+    note.textContent = "(saved to the file, but this mod build renders a fixed character model, so it may not change on-screen)";
+    host.appendChild(note);
   }
 
   // ---- Render slots -------------------------------------------------------
