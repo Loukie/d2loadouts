@@ -228,8 +228,8 @@
       "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar) — confirmed in-game
         { value: 7, label: "Tripmine Grenade" }, { value: 8, label: "Incendiary Grenade" }, { value: 9, label: "Swarm Grenade" },
       ],
-      "0X4F91DC97": [ // Arcstrider (Hunter / Arc)
-        { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Flux Grenade" }, { value: 9, label: "Skip Grenade" },
+      "0X4F91DC97": [ // Arcstrider (Hunter / Arc) — confirmed in-game
+        { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Skip Grenade" }, { value: 9, label: "Flux Grenade" },
       ],
       "0XC0483D8B": [ // Nightstalker (Hunter / Void)
         { value: 7, label: "Spike Grenade" }, { value: 8, label: "Voidwall Grenade" }, { value: 9, label: "Vortex Grenade" },
@@ -246,7 +246,7 @@
     },
   };
   const SUBCLASS_PRESET_CONFIRMED = {
-    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true }, // + Sentinel
+    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true, "0X4F91DC97": true }, // + Arcstrider
   };
 
   // Supers get their own map so the picker shows EVERY super by name and greys
