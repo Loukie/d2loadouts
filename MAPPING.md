@@ -50,7 +50,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Arcstrider | Arcbolt ✅ | Skip ✅ | Flux ✅ |
 | Nightstalker | Spike ✅ | Vortex ✅ | Voidwall ✅ |
 | Dawnblade | Fusion ✅ | Solar ✅ | Firebolt ✅ |
-| Stormcaller | Arcbolt ⚠️ | Pulse ⚠️ | Storm ⚠️ |
+| Stormcaller | Storm ✅ | Arcbolt ✅ | Pulse ✅ |
 | Voidwalker | Vortex ⚠️ | Scatter ⚠️ | Axion Bolt ⚠️ |
 
 ## Supers — `super_ability` (per subclass)
@@ -64,7 +64,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Arcstrider | Arc Staff ✅ | Whirlwind Guard ❌ (variant — 20 breaks, index TBD) |
 | Nightstalker | Shadowshot ✅ | Spectral Blades ✅ |
 | Dawnblade | Daybreak ✅ | Well of Radiance ✅ |
-| Stormcaller | Stormtrance ⚠️ | Chaos Reach ⚠️ |
+| Stormcaller | Stormtrance ✅ | Chaos Reach ✅ |
 | Voidwalker | Nova Bomb ⚠️ | Nova Warp ⚠️ |
 
 ## How to verify (quick loop)
