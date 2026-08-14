@@ -45,19 +45,14 @@ that won't equip.
 
 Every subclass has three attunement trees, and each tree is a fixed super +
 melee pair (that's how the game itself works — you pick a tree, not a loose
-super). The picker sets both at once, so you always get a valid combo. All three
-trees work for seven of the nine subclasses.
+super). The picker sets both at once, so you always get a valid combo. **All 27
+trees work** — every one confirmed in-game by actually casting the super.
 
-Two trees are **greyed out**, because their super is a *hold-to-guard* super the
-0.2 build of the mod can't load (it would break your game):
-
-- **Sentinel** — Code of the Commander (**Banner Shield**)
-- **Arcstrider** — Way of the Current (**Whirlwind Guard**)
-
-Those two subclasses still have their other two trees. Everything else — every
-other tree, all grenades, jumps, and class abilities — works. (Those two supers
-*do* work on the mod's 0.1 build; it's a 0.2-only limitation, confirmed by
-in-game testing.)
+That includes the two "guard" supers that a lot of tools can't reach — **Banner
+Shield** (Sentinel) and **Whirlwind Guard** (Arcstrider). The trick: those two
+subclasses have a single super slot, so their super is chosen by the tree's
+*melee*, not by a separate super number. The picker handles that for you — just
+pick the tree and it writes the right combo.
 
 ## How it works
 
@@ -76,8 +71,8 @@ in-game testing.)
 
 An edited file that hangs on loading or drops you to character-select almost
 always means a bad ability value. To recover: **delete `settings.json` and
-relaunch** — the mod writes a fresh working default. (The tool greys out the
-values known to break, so this should be rare.)
+relaunch** — the mod writes a fresh working default. (The tool only writes
+combos verified in-game, so this should be rare.)
 
 ## Layout
 
@@ -94,12 +89,10 @@ values known to break, so this should be rare.)
 
 - **[Kyle Thompson](https://github.com/KyleThmpsn)** and his
   **[Sundial](https://github.com/KyleThmpsn/sundial)** editor — a fuller, native
-  editor that reads ability data straight from the Shadowkeep game files. Its
-  catalog is the authoritative source for the super + melee **attunement** model
-  this tool's tree picker is built on — all 9 subclasses' trees were cross-checked
-  against it and then verified in-game on 0.2. (Sundial targets Sunrise **0.1**;
-  the only thing that doesn't carry to 0.2 is the two guard supers, which the 0.2
-  build can't load — those stay greyed here.) Go check out Sundial for the
+  editor that reads ability data straight from the Shadowkeep game files. Reading
+  how it maps the super/melee socket pools is what cracked the "guard super"
+  puzzle (Banner Shield / Whirlwind Guard) and revealed that those supers are
+  selected by the tree's melee, not a super number. Go check out Sundial for the
   full-featured, game-file-accurate editor.
 - Built for the [Sunrise](https://github.com/stanuwu/Sunrise) offline exploration
   mod by [stanuwu](https://github.com/stanuwu).
