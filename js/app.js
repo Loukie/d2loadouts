@@ -259,7 +259,10 @@
   };
   const SUBCLASS_PRESET_CONFIRMED = {
     grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true }, // + Sentinel
-    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true }, // + Sentinel
+    // NOTE: super=20 is NOT universal. Sentinel's middle super (Banner Shield) is
+    // NOT at 20 (Ward of Dawn's top block is oversized) — 20 breaks the boot there.
+    // Only mark a subclass super confirmed after EQUIP-testing (hover isn't enough).
+    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true }, // Striker, Gunslinger, Sunbreaker (equip-confirmed)
   };
 
   function subclassHashOf(char) {

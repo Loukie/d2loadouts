@@ -59,7 +59,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | --- | --- | --- |
 | Striker | Fists of Havoc ✅ | Thundercrash ✅ |
 | Sunbreaker | Hammer of Sol ✅ | Burning Maul ✅ |
-| Sentinel | Ward of Dawn ✅ | Banner Shield ✅ |
+| Sentinel | Ward of Dawn ✅ | Banner Shield ❌ (20 breaks — real index TBD) |
 | Gunslinger | Golden Gun ✅ | Blade Barrage ✅ |
 | Arcstrider | Arc Staff ⚠️ | Whirlwind Guard ⚠️ |
 | Nightstalker | Shadowshot ⚠️ | Spectral Blades ⚠️ |
