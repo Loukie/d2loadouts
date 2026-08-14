@@ -244,25 +244,26 @@
         { value: 7, label: "Vortex Grenade" }, { value: 8, label: "Scatter Grenade" }, { value: 9, label: "Axion Bolt" },
       ],
     },
-    super_ability: {
-      // 10 = the subclass's common super, 20 = its middle-tree super.
-      "0XB0554739": [{ value: 10, label: "Fists of Havoc" }, { value: 20, label: "Thundercrash" }], // Striker
-      "0XB920CE9A": [{ value: 10, label: "Hammer of Sol" }, { value: 20, label: "Burning Maul" }], // Sunbreaker
-      "0XC99B33E9": [{ value: 10, label: "Ward of Dawn" }, { value: 20, label: "Banner Shield" }], // Sentinel (confirmed)
-      "0XD8B8D1FC": [{ value: 10, label: "Golden Gun" }, { value: 20, label: "Blade Barrage" }], // Gunslinger
-      "0X4F91DC97": [{ value: 10, label: "Arc Staff" }, { value: 20, label: "Whirlwind Guard" }], // Arcstrider
-      "0XC0483D8B": [{ value: 10, label: "Shadowshot" }, { value: 20, label: "Spectral Blades" }], // Nightstalker
-      "0XCF88FEA5": [{ value: 10, label: "Daybreak" }, { value: 20, label: "Well of Radiance" }], // Dawnblade
-      "0X686A154A": [{ value: 10, label: "Stormtrance" }, { value: 20, label: "Chaos Reach" }], // Stormcaller
-      "0XE7BC88B0": [{ value: 10, label: "Nova Bomb" }, { value: 20, label: "Nova Warp" }], // Voidwalker
-    },
   };
   const SUBCLASS_PRESET_CONFIRMED = {
     grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true }, // + Sentinel
-    // NOTE: super=20 is NOT universal. Sentinel's middle super (Banner Shield) is
-    // NOT at 20 (Ward of Dawn's top block is oversized) — 20 breaks the boot there.
-    // Only mark a subclass super confirmed after EQUIP-testing (hover isn't enough).
-    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true }, // Striker, Gunslinger, Sunbreaker (equip-confirmed)
+  };
+
+  // Supers get their own map so the picker shows EVERY super by name and greys
+  // out the ones whose safe index isn't verified yet (ok:false; value may be null
+  // when the index is unknown). value 10 = each subclass's default super and
+  // always boots. super=20 is NOT universal — it must be equip-tested per
+  // subclass (Sentinel's 20 breaks, so its extra supers are greyed out).
+  const SUPER_OPTIONS = {
+    "0XB0554739": [{ value: 10, label: "Fists of Havoc", ok: true }, { value: 20, label: "Thundercrash", ok: true }], // Striker
+    "0XB920CE9A": [{ value: 10, label: "Hammer of Sol", ok: true }, { value: 20, label: "Burning Maul", ok: true }], // Sunbreaker
+    "0XC99B33E9": [{ value: 10, label: "Ward of Dawn", ok: true }, { value: null, label: "Banner Shield", ok: false }, { value: null, label: "Sentinel Shield", ok: false }], // Sentinel (3 supers)
+    "0XD8B8D1FC": [{ value: 10, label: "Golden Gun", ok: true }, { value: 20, label: "Blade Barrage", ok: true }], // Gunslinger
+    "0X4F91DC97": [{ value: 10, label: "Arc Staff", ok: true }, { value: 20, label: "Whirlwind Guard", ok: false }], // Arcstrider
+    "0XC0483D8B": [{ value: 10, label: "Shadowshot", ok: true }, { value: 20, label: "Spectral Blades", ok: false }], // Nightstalker
+    "0XCF88FEA5": [{ value: 10, label: "Daybreak", ok: true }, { value: 20, label: "Well of Radiance", ok: false }], // Dawnblade
+    "0X686A154A": [{ value: 10, label: "Stormtrance", ok: true }, { value: 20, label: "Chaos Reach", ok: false }], // Stormcaller
+    "0XE7BC88B0": [{ value: 10, label: "Nova Bomb", ok: true }, { value: 20, label: "Nova Warp", ok: false }], // Voidwalker
   };
 
   function subclassHashOf(char) {
@@ -302,11 +303,40 @@
     panel.appendChild(note);
 
     for (const f of ABILITY_FIELDS) {
+      if (f.key === "super_ability") { panel.appendChild(renderSuperRow(char, f)); continue; }
       if (LOCKED_ABILITIES.has(f.key)) { panel.appendChild(renderLockedRow(char, f)); continue; }
       const preset = resolvePreset(f.key, char);
       panel.appendChild(preset ? renderPresetRow(char, f, preset.options, preset.confirmed) : renderStepperRow(char, f));
     }
     return panel;
+  }
+
+  /** Super picker: every super named; unverified ones are greyed out (can't break the game). */
+  function renderSuperRow(char, f) {
+    const opts = SUPER_OPTIONS[subclassHashOf(char)];
+    if (!opts) { return renderStepperRow(char, f); }
+    const current = char[f.key];
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
+    const lbl = abilityLabel(f, char);
+    lbl.style.width = "150px";
+    row.appendChild(lbl);
+    for (const o of opts) {
+      const btn = document.createElement("button");
+      btn.textContent = o.label;
+      if (o.ok && o.value !== null) {
+        btn.className = "tab" + (current === o.value ? " active" : "");
+        btn.onclick = () => setAbility(char, f.key, o.value);
+      } else {
+        btn.className = "tab";
+        btn.disabled = true;
+        btn.style.opacity = "0.4";
+        btn.style.cursor = "not-allowed";
+        btn.title = "Index not verified yet — this one would break the game";
+      }
+      row.appendChild(btn);
+    }
+    return row;
   }
 
   /** Read-only row for a tree-bound ability (super / melee) that can't be changed safely. */
