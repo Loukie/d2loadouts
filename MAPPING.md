@@ -1,6 +1,11 @@
 # Subclass ability index map
 
-How the ability numbers in `settings.json` map to in-game abilities, reverse-engineered by testing.
+How the ability numbers in `settings.json` map to in-game abilities.
+
+Originally reverse-engineered by in-game testing, then corrected against the
+**authoritative game-file data from [Kyle Thompson's Sundial](https://github.com/KyleThmpsn/sundial)** — thanks Kyle! The tool now uses an
+**Attunement (tree) picker**: each attunement sets `super_ability` + `melee_ability`
+together as a coherent pair, which is why the earlier super-alone edits broke.
 
 ## The universal layout
 
@@ -12,7 +17,7 @@ Every subclass uses the **same index positions** — only the names change per s
 | `movement_ability` | **4, 5, 6** | the three jumps (per class) |
 | `grenade_ability` | **7, 8, 9** | the three grenades (per subclass) |
 | `super_ability` | **10, 20** | the two supers (per subclass) |
-| `melee_ability` | **11** | tree-bound — do not change (breaks) |
+| `melee_ability` | **11 / 15 / 21** | one per tree; set together with the super (attunement) |
 
 Notes / findings:
 - **0–1** are the sprint/class region — setting anything there breaks the character (→ stuck loading / class-select).

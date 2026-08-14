@@ -1,4 +1,6 @@
 // Authoritative subclass ability data extracted from the Sunrise/Shadowkeep
+// Ability/attunement data thanks to Kyle Thompson's Sundial (https://github.com/KyleThmpsn/sundial),
+// which reads these values from the Shadowkeep game files.
 // game files (via the Sundial catalog). Each subclass has 3 attunements (trees);
 // picking one sets super_ability + melee_ability as a pair.
 window.SUNRISE_ABILITIES = {

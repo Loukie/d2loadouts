@@ -82,7 +82,18 @@ values known to break, so this should be rare.)
 | `data/items.js` | the weapon/armour/subclass list (name → hash) |
 | `MAPPING.md` | the ability index reference |
 
+## Credits
+
+- **Ability / attunement data — huge thanks to [Kyle Thompson](https://github.com/KyleThmpsn)
+  and his [Sundial](https://github.com/KyleThmpsn/sundial) editor.** Sundial reads
+  the super/melee/attunement values straight from the Shadowkeep game files, and
+  it's what let us pair each super with its correct melee (the "attunement" model)
+  after we'd been reverse-engineering it by hand. Go check out Sundial for the
+  full-featured, game-file-accurate editor (plugs, perks, cosmetics, and more).
+- Built for the [Sunrise](https://github.com/stanuwu/Sunrise) offline exploration
+  mod by [stanuwu](https://github.com/stanuwu).
+
 ## Disclaimer
 
-Not affiliated with Bungie or the mod's author. You must provide your own copy of
+Not affiliated with Bungie or the mods' authors. You must provide your own copy of
 the game. This project ships no game data.
