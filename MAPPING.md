@@ -48,7 +48,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Sentinel | Suppressor ✅ | Magnetic ✅ | Voidwall ✅ |
 | Gunslinger | Tripmine ✅ | Incendiary ✅ | Swarm ✅ |
 | Arcstrider | Arcbolt ✅ | Skip ✅ | Flux ✅ |
-| Nightstalker | Spike ⚠️ | Voidwall ⚠️ | Vortex ⚠️ |
+| Nightstalker | Vortex ✅ | Spike ✅ | Voidwall ✅ |
 | Dawnblade | Solar ⚠️ | Firebolt ⚠️ | Fusion ⚠️ |
 | Stormcaller | Arcbolt ⚠️ | Pulse ⚠️ | Storm ⚠️ |
 | Voidwalker | Vortex ⚠️ | Scatter ⚠️ | Axion Bolt ⚠️ |
@@ -62,7 +62,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Sentinel | Ward of Dawn ✅ | Banner Shield ❌ (20 breaks — real index TBD) |
 | Gunslinger | Golden Gun ✅ | Blade Barrage ✅ |
 | Arcstrider | Arc Staff ✅ | Whirlwind Guard ❌ (variant — 20 breaks, index TBD) |
-| Nightstalker | Shadowshot ⚠️ | Spectral Blades ⚠️ |
+| Nightstalker | Shadowshot ✅ | Spectral Blades ✅ |
 | Dawnblade | Daybreak ⚠️ | Well of Radiance ⚠️ |
 | Stormcaller | Stormtrance ⚠️ | Chaos Reach ⚠️ |
 | Voidwalker | Nova Bomb ⚠️ | Nova Warp ⚠️ |

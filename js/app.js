@@ -231,8 +231,8 @@
       "0X4F91DC97": [ // Arcstrider (Hunter / Arc) — confirmed in-game
         { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Skip Grenade" }, { value: 9, label: "Flux Grenade" },
       ],
-      "0XC0483D8B": [ // Nightstalker (Hunter / Void)
-        { value: 7, label: "Spike Grenade" }, { value: 8, label: "Voidwall Grenade" }, { value: 9, label: "Vortex Grenade" },
+      "0XC0483D8B": [ // Nightstalker (Hunter / Void) — confirmed in-game
+        { value: 7, label: "Vortex Grenade" }, { value: 8, label: "Spike Grenade" }, { value: 9, label: "Voidwall Grenade" },
       ],
       "0XCF88FEA5": [ // Dawnblade (Warlock / Solar)
         { value: 7, label: "Solar Grenade" }, { value: 8, label: "Firebolt Grenade" }, { value: 9, label: "Fusion Grenade" },
@@ -246,7 +246,7 @@
     },
   };
   const SUBCLASS_PRESET_CONFIRMED = {
-    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true, "0X4F91DC97": true }, // + Arcstrider
+    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true, "0X4F91DC97": true, "0XC0483D8B": true }, // + Nightstalker
   };
 
   // Supers get their own map so the picker shows EVERY super by name and greys
@@ -260,7 +260,7 @@
     "0XC99B33E9": [{ value: 10, label: "Ward of Dawn", ok: true }, { value: null, label: "Banner Shield", ok: false }, { value: null, label: "Sentinel Shield", ok: false }], // Sentinel (3 supers)
     "0XD8B8D1FC": [{ value: 10, label: "Golden Gun", ok: true }, { value: 20, label: "Blade Barrage", ok: true }], // Gunslinger
     "0X4F91DC97": [{ value: 10, label: "Arc Staff", ok: true }, { value: null, label: "Whirlwind Guard", ok: false }], // Arcstrider (variant super — 20 breaks, index unknown)
-    "0XC0483D8B": [{ value: 10, label: "Shadowshot", ok: true }, { value: 20, label: "Spectral Blades", ok: false }], // Nightstalker
+    "0XC0483D8B": [{ value: 10, label: "Shadowshot", ok: true }, { value: 20, label: "Spectral Blades", ok: true }], // Nightstalker
     "0XCF88FEA5": [{ value: 10, label: "Daybreak", ok: true }, { value: 20, label: "Well of Radiance", ok: false }], // Dawnblade
     "0X686A154A": [{ value: 10, label: "Stormtrance", ok: true }, { value: 20, label: "Chaos Reach", ok: false }], // Stormcaller
     "0XE7BC88B0": [{ value: 10, label: "Nova Bomb", ok: true }, { value: 20, label: "Nova Warp", ok: false }], // Voidwalker
