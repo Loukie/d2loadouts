@@ -48,7 +48,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Sentinel | Suppressor ✅ | Magnetic ✅ | Voidwall ✅ |
 | Gunslinger | Tripmine ✅ | Incendiary ✅ | Swarm ✅ |
 | Arcstrider | Arcbolt ✅ | Skip ✅ | Flux ✅ |
-| Nightstalker | Vortex ✅ | Spike ✅ | Voidwall ✅ |
+| Nightstalker | Spike ✅ | Vortex ✅ | Voidwall ✅ |
 | Dawnblade | Solar ⚠️ | Firebolt ⚠️ | Fusion ⚠️ |
 | Stormcaller | Arcbolt ⚠️ | Pulse ⚠️ | Storm ⚠️ |
 | Voidwalker | Vortex ⚠️ | Scatter ⚠️ | Axion Bolt ⚠️ |

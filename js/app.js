@@ -232,7 +232,7 @@
         { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Skip Grenade" }, { value: 9, label: "Flux Grenade" },
       ],
       "0XC0483D8B": [ // Nightstalker (Hunter / Void) — confirmed in-game
-        { value: 7, label: "Vortex Grenade" }, { value: 8, label: "Spike Grenade" }, { value: 9, label: "Voidwall Grenade" },
+        { value: 7, label: "Spike Grenade" }, { value: 8, label: "Vortex Grenade" }, { value: 9, label: "Voidwall Grenade" },
       ],
       "0XCF88FEA5": [ // Dawnblade (Warlock / Solar)
         { value: 7, label: "Solar Grenade" }, { value: 8, label: "Firebolt Grenade" }, { value: 9, label: "Fusion Grenade" },
