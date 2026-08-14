@@ -167,6 +167,78 @@
     };
   }
 
+  // ---- Abilities (experimental index tuner) -------------------------------
+  // The old subclasses' talent-grid data was removed from Bungie's manifest, so
+  // we can't map index -> super by name. These are the raw config ability slots;
+  // out-of-range values are safely ignored by the mod (no boot break), so the
+  // user can experiment to find supers/abilities.
+
+  const ABILITY_FIELDS = [
+    { key: "super_ability", label: "Super" },
+    { key: "grenade_ability", label: "Grenade" },
+    { key: "melee_ability", label: "Melee" },
+    { key: "movement_ability", label: "Jump / movement" },
+    { key: "class_ability", label: "Class ability" },
+  ];
+  const ABILITY_MAX = 40;
+
+  function renderAbilitiesPanel(char) {
+    const panel = document.createElement("div");
+    panel.style.cssText =
+      "background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px";
+
+    const note = document.createElement("div");
+    note.className = "hint";
+    note.style.marginBottom = "10px";
+    note.innerHTML = "Experimental — these pick your super/abilities by slot number. " +
+      "Bad numbers are safely ignored by the game. Change one, save, launch, and see what you get; " +
+      "tell me what a number does and I'll label it.";
+    panel.appendChild(note);
+
+    for (const f of ABILITY_FIELDS) {
+      const current = Number.isInteger(char[f.key]) ? char[f.key] : 0;
+      const row = document.createElement("div");
+      row.style.cssText = "display:grid;grid-template-columns:150px auto auto auto;gap:10px;align-items:center;margin-bottom:6px";
+
+      const changed = state.changed.has(`${state.charIndex}:${f.key}`);
+      const lbl = document.createElement("div");
+      lbl.className = "slot-name";
+      lbl.style.fontWeight = "600";
+      lbl.innerHTML = f.label + (changed ? ' <span class="badge">changed</span>' : "");
+
+      const minus = document.createElement("button");
+      minus.className = "ghost";
+      minus.textContent = "−";
+      minus.onclick = () => setAbility(char, f.key, current - 1);
+
+      const val = document.createElement("input");
+      val.type = "text";
+      val.value = current;
+      val.style.cssText = "width:64px;text-align:center";
+      val.onchange = () => setAbility(char, f.key, parseInt(val.value, 10));
+
+      const plus = document.createElement("button");
+      plus.className = "ghost";
+      plus.textContent = "+";
+      plus.onclick = () => setAbility(char, f.key, current + 1);
+
+      row.appendChild(lbl);
+      row.appendChild(minus);
+      row.appendChild(val);
+      row.appendChild(plus);
+      panel.appendChild(row);
+    }
+    return panel;
+  }
+
+  function setAbility(char, key, value) {
+    if (!Number.isInteger(value)) { renderSlots(); return; }
+    const clamped = Math.max(0, Math.min(ABILITY_MAX, value));
+    char[key] = clamped;
+    state.changed.add(`${state.charIndex}:${key}`);
+    renderSlots();
+  }
+
   function renderSlots() {
     renderAppearance();
     const container = $("slots");
@@ -187,6 +259,9 @@
 
       for (const slot of g.slots) {
         container.appendChild(renderSlotRow(char, slot, g.group));
+      }
+      if (g.group === "subclass") {
+        container.appendChild(renderAbilitiesPanel(char));
       }
     }
   }
