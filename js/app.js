@@ -60,6 +60,8 @@
         $("loadErr").textContent = "";
         renderClasses();
         renderSlots();
+        renderName();
+        $("nameCard").classList.remove("hidden");
         $("classCard").classList.remove("hidden");
         $("editCard").classList.remove("hidden");
         $("saveCard").classList.remove("hidden");
@@ -88,6 +90,28 @@
       btn.onclick = () => { state.charIndex = i; renderClasses(); renderSlots(); };
       tabs.appendChild(btn);
     });
+  }
+
+  // ---- Guardian name ------------------------------------------------------
+
+  function currentName() {
+    return state.root?.steam?.user?.persona_name ?? "";
+  }
+
+  function renderName() {
+    $("playerName").value = currentName();
+    $("nameHint").textContent = "";
+  }
+
+  function applyName() {
+    if (!state.root) { return; }
+    if (!state.root.steam) { state.root.steam = {}; }
+    if (!state.root.steam.user) { state.root.steam.user = {}; }
+    const value = $("playerName").value.trim() || "Player";
+    state.root.steam.user.persona_name = value;
+    $("playerName").value = value;
+    $("nameHint").className = "hint ok";
+    $("nameHint").textContent = `Name set to "${value}" — saved when you download.`;
   }
 
   // ---- Render slots -------------------------------------------------------
@@ -324,6 +348,7 @@
     $("saveMsg").textContent = "";
     renderClasses();
     renderSlots();
+    renderName();
   }
 
   // ---- Utils --------------------------------------------------------------
@@ -354,6 +379,9 @@
     $("pickPaste").onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); onApplyPaste(); } };
     $("pickConfirm").onclick = onConfirm;
     $("pickCancel").onclick = () => $("pickModal").close();
+
+    $("nameApply").onclick = applyName;
+    $("playerName").onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); applyName(); } };
 
     $("downloadBtn").onclick = download;
     $("resetBtn").onclick = resetChanges;
