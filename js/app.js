@@ -182,6 +182,19 @@
   ];
   const ABILITY_MAX = 40;
 
+  // Confirmed index -> named option maps, discovered by in-game testing.
+  // As we verify more (grenade/melee/jump/super), add them here and they turn
+  // from raw steppers into clean named pickers. class: 0 Titan, 1 Hunter, 2 Warlock.
+  const ABILITY_PRESETS = {
+    class_ability: {
+      0: [{ value: 2, label: "Towering Barricade" }, { value: 3, label: "Rally Barricade" }],
+      1: [{ value: 2, label: "Marksman's Dodge" }, { value: 3, label: "Gambler's Dodge" }],
+      2: [{ value: 2, label: "Healing Rift" }, { value: 3, label: "Empowering Rift" }],
+    },
+  };
+  // Which preset lists are still guessed (order unverified) vs confirmed in-game.
+  const PRESET_CONFIRMED = { class_ability: { 0: true } };
+
   function renderAbilitiesPanel(char) {
     const panel = document.createElement("div");
     panel.style.cssText =
@@ -196,39 +209,75 @@
     panel.appendChild(note);
 
     for (const f of ABILITY_FIELDS) {
-      const current = Number.isInteger(char[f.key]) ? char[f.key] : 0;
-      const row = document.createElement("div");
-      row.style.cssText = "display:grid;grid-template-columns:150px auto auto auto;gap:10px;align-items:center;margin-bottom:6px";
-
-      const changed = state.changed.has(`${state.charIndex}:${f.key}`);
-      const lbl = document.createElement("div");
-      lbl.className = "slot-name";
-      lbl.style.fontWeight = "600";
-      lbl.innerHTML = f.label + (changed ? ' <span class="badge">changed</span>' : "");
-
-      const minus = document.createElement("button");
-      minus.className = "ghost";
-      minus.textContent = "−";
-      minus.onclick = () => setAbility(char, f.key, current - 1);
-
-      const val = document.createElement("input");
-      val.type = "text";
-      val.value = current;
-      val.style.cssText = "width:64px;text-align:center";
-      val.onchange = () => setAbility(char, f.key, parseInt(val.value, 10));
-
-      const plus = document.createElement("button");
-      plus.className = "ghost";
-      plus.textContent = "+";
-      plus.onclick = () => setAbility(char, f.key, current + 1);
-
-      row.appendChild(lbl);
-      row.appendChild(minus);
-      row.appendChild(val);
-      row.appendChild(plus);
-      panel.appendChild(row);
+      const presets = ABILITY_PRESETS[f.key] && ABILITY_PRESETS[f.key][char.class];
+      panel.appendChild(presets ? renderPresetRow(char, f, presets) : renderStepperRow(char, f));
     }
     return panel;
+  }
+
+  function abilityLabel(f, char) {
+    const changed = state.changed.has(`${state.charIndex}:${f.key}`);
+    const lbl = document.createElement("div");
+    lbl.className = "slot-name";
+    lbl.style.fontWeight = "600";
+    lbl.innerHTML = f.label + (changed ? ' <span class="badge">changed</span>' : "");
+    return lbl;
+  }
+
+  /** Named picker for a confirmed ability (buttons per known option). */
+  function renderPresetRow(char, f, presets) {
+    const current = char[f.key];
+    const confirmed = PRESET_CONFIRMED[f.key] && PRESET_CONFIRMED[f.key][char.class];
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
+
+    const lbl = abilityLabel(f, char);
+    lbl.style.width = "150px";
+    row.appendChild(lbl);
+
+    for (const opt of presets) {
+      const btn = document.createElement("button");
+      btn.className = "tab" + (current === opt.value ? " active" : "");
+      btn.textContent = opt.label;
+      btn.onclick = () => setAbility(char, f.key, opt.value);
+      row.appendChild(btn);
+    }
+    if (!confirmed) {
+      const note = document.createElement("span");
+      note.className = "hint";
+      note.textContent = "(order unverified)";
+      row.appendChild(note);
+    }
+    return row;
+  }
+
+  /** Raw index stepper for an ability we haven't mapped yet. */
+  function renderStepperRow(char, f) {
+    const current = Number.isInteger(char[f.key]) ? char[f.key] : 0;
+    const row = document.createElement("div");
+    row.style.cssText = "display:grid;grid-template-columns:150px auto auto auto;gap:10px;align-items:center;margin-bottom:6px";
+
+    const minus = document.createElement("button");
+    minus.className = "ghost";
+    minus.textContent = "−";
+    minus.onclick = () => setAbility(char, f.key, current - 1);
+
+    const val = document.createElement("input");
+    val.type = "text";
+    val.value = current;
+    val.style.cssText = "width:64px;text-align:center";
+    val.onchange = () => setAbility(char, f.key, parseInt(val.value, 10));
+
+    const plus = document.createElement("button");
+    plus.className = "ghost";
+    plus.textContent = "+";
+    plus.onclick = () => setAbility(char, f.key, current + 1);
+
+    row.appendChild(abilityLabel(f, char));
+    row.appendChild(minus);
+    row.appendChild(val);
+    row.appendChild(plus);
+    return row;
   }
 
   function setAbility(char, key, value) {
