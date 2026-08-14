@@ -58,7 +58,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Subclass | 10 (common) | 20 (middle tree) |
 | --- | --- | --- |
 | Striker | Fists of Havoc ✅ | Thundercrash ✅ |
-| Sunbreaker | Hammer of Sol ⚠️ | Burning Maul ⚠️ |
+| Sunbreaker | Hammer of Sol ✅ | Burning Maul ✅ |
 | Sentinel | Sentinel Shield ⚠️ | Banner Shield ⚠️ |
 | Gunslinger | Golden Gun ✅ | Blade Barrage ✅ |
 | Arcstrider | Arc Staff ⚠️ | Whirlwind Guard ⚠️ |

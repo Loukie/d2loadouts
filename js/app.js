@@ -259,7 +259,7 @@
   };
   const SUBCLASS_PRESET_CONFIRMED = {
     grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true }, // Striker, Gunslinger confirmed
-    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true }, // Striker, Gunslinger confirmed
+    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true }, // Striker, Gunslinger, Sunbreaker confirmed
   };
 
   function subclassHashOf(char) {
