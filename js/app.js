@@ -328,6 +328,17 @@
   function download() {
     const text = serializeConfig(state.root, state.floatKeys);
     const blob = new Blob([text], { type: "application/json" });
+    const bytes = blob.size;
+    const kb = (bytes / 1024).toFixed(1);
+
+    if (bytes > CONFIG_BYTE_LIMIT) {
+      // Sunrise would reject this at boot; don't hand the user a broken file silently.
+      $("saveMsg").className = "err";
+      $("saveMsg").textContent =
+        `File is ${kb} KB, over Sunrise's 64 KB limit — the game would refuse it. Not downloaded. Tell the tool author.`;
+      return;
+    }
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -339,8 +350,8 @@
     const n = state.changed.size;
     $("saveMsg").className = "err ok";
     $("saveMsg").textContent = n
-      ? `Saved with ${n} change${n === 1 ? "" : "s"}. Drop it back next to your settings.json.`
-      : "Saved (no changes made).";
+      ? `Saved ${n} change${n === 1 ? "" : "s"} (${kb} KB, under the 64 KB limit). Drop it back next to your settings.json.`
+      : `Saved (${kb} KB, under the 64 KB limit).`;
   }
 
   function resetChanges() {
@@ -373,7 +384,12 @@
     return set;
   }
 
-  /** JSON.stringify, but integer values under float keys are emitted as "N.0". */
+  // Sunrise reads settings.json into a fixed 64 KB buffer and rejects anything
+  // larger ("too_large" -> "Problem reading game content"). Pretty-printing
+  // balloons the big arrays past that, so we emit COMPACT JSON (no indentation).
+  const CONFIG_BYTE_LIMIT = 64 * 1024;
+
+  /** Compact JSON.stringify, but integer values under float keys are emitted as "N.0". */
   function serializeConfig(root, floatKeys) {
     const SENT = "@~FLOAT~@";
     const text = JSON.stringify(root, (key, value) => {
@@ -381,7 +397,7 @@
         return SENT + value + SENT;
       }
       return value;
-    }, 2);
+    });
     return text.replace(new RegExp('"' + SENT + '(-?\\d+)' + SENT + '"', "g"), "$1.0");
   }
 
