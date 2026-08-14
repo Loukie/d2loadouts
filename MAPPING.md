@@ -28,7 +28,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Class | 2 | 3 |
 | --- | --- | --- |
 | Titan | Towering Barricade ✅ | Rally Barricade ✅ |
-| Hunter | Marksman's Dodge ⚠️ | Gambler's Dodge ⚠️ |
+| Hunter | Marksman's Dodge ✅ | Gambler's Dodge ✅ |
 | Warlock | Healing Rift ⚠️ | Empowering Rift ⚠️ |
 
 ## Jumps — `movement_ability` (per class)
@@ -36,7 +36,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Class | 4 | 5 | 6 |
 | --- | --- | --- | --- |
 | Titan | High Lift ✅ | Strafe Lift ✅ | Catapult Lift ✅ |
-| Hunter | High Jump ⚠️ | Strafe Jump ⚠️ | Triple Jump ⚠️ |
+| Hunter | High Jump ✅ | Strafe Jump ✅ | Triple Jump ✅ |
 | Warlock | Strafe Glide ⚠️ | Burst Glide ⚠️ | Balanced Glide ⚠️ |
 
 ## Grenades — `grenade_ability` (per subclass)
@@ -60,7 +60,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Striker | Fists of Havoc ✅ | Thundercrash ✅ |
 | Sunbreaker | Hammer of Sol ⚠️ | Burning Maul ⚠️ |
 | Sentinel | Sentinel Shield ⚠️ | Banner Shield ⚠️ |
-| Gunslinger | Golden Gun ⚠️ | Blade Barrage ⚠️ |
+| Gunslinger | Golden Gun ✅ | Blade Barrage ✅ |
 | Arcstrider | Arc Staff ⚠️ | Whirlwind Guard ⚠️ |
 | Nightstalker | Shadowshot ⚠️ | Spectral Blades ⚠️ |
 | Dawnblade | Daybreak ⚠️ | Well of Radiance ⚠️ |

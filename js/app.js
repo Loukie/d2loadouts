@@ -204,8 +204,8 @@
   };
   // Which per-class preset lists are confirmed in-game (vs best-guess order).
   const PRESET_CONFIRMED = {
-    class_ability: { 0: true },
-    movement_ability: { 0: true },
+    class_ability: { 0: true, 1: true }, // Titan, Hunter confirmed
+    movement_ability: { 0: true, 1: true },
   };
 
   // Grenade/melee are element-specific, so they key off the subclass hash
@@ -259,7 +259,7 @@
   };
   const SUBCLASS_PRESET_CONFIRMED = {
     grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true }, // Striker, Gunslinger confirmed
-    super_ability: { "0XB0554739": true }, // Striker confirmed; others best-guess (verify in-game)
+    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true }, // Striker, Gunslinger confirmed
   };
 
   function subclassHashOf(char) {
