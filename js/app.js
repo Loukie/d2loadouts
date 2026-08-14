@@ -116,6 +116,36 @@
     $("nameHint").textContent = `Name set to "${value}" — saved when you download.`;
   }
 
+  // ---- Appearance (per character) -----------------------------------------
+
+  const GENDERS = [{ value: 0, label: "Male" }, { value: 1, label: "Female" }];
+
+  function renderAppearance() {
+    const host = $("appearance");
+    if (!host) { return; }
+    const char = state.root.state.characters[state.charIndex];
+    const current = char.gender;
+    host.innerHTML = "";
+
+    const label = document.createElement("span");
+    label.className = "hint";
+    label.style.marginRight = "10px";
+    label.textContent = "Body type:";
+    host.appendChild(label);
+
+    for (const g of GENDERS) {
+      const btn = document.createElement("button");
+      btn.className = "tab" + (current === g.value ? " active" : "");
+      btn.textContent = g.label;
+      btn.onclick = () => {
+        char.gender = g.value;
+        state.changed.add(`${state.charIndex}:gender`);
+        renderAppearance();
+      };
+      host.appendChild(btn);
+    }
+  }
+
   // ---- Render slots -------------------------------------------------------
 
   function slotLabel(slot) {
@@ -138,11 +168,13 @@
   }
 
   function renderSlots() {
+    renderAppearance();
     const container = $("slots");
     container.innerHTML = "";
     const char = state.root.state.characters[state.charIndex];
 
     const groups = [
+      { title: "Subclass", slots: ["subclass"], group: "subclass" },
       { title: "Weapons", slots: WEAPON_SLOTS, group: "weapons" },
       { title: "Armour", slots: ARMOR_SLOTS, group: "armor" },
     ];
@@ -213,6 +245,8 @@
     let options = [];
     if (group === "weapons") {
       options = DB.weapons.filter((w) => w.slot === slot);
+    } else if (group === "subclass") {
+      options = (DB.subclasses || []).filter((s) => s.class === char.class);
     } else {
       options = DB.armor.filter((a) => a.slot === slot && a.class === char.class);
     }
@@ -220,7 +254,7 @@
     for (const o of options) {
       const opt = document.createElement("option");
       opt.value = o.hash;
-      opt.textContent = o.tier ? `${o.name} — ${o.tier}` : o.name;
+      opt.textContent = o.tier ? `${o.name} — ${o.tier}` : (o.element ? `${o.name} — ${o.element}` : o.name);
       opt.dataset.decimal = o.decimal;
       select.appendChild(opt);
     }
@@ -281,17 +315,19 @@
 
   /**
    * Sets a slot to a new item hash. Existing slots keep their instance id,
-   * level and quantity; empty slots get a freshly minted instance id. In both
-   * cases plugs are reset to null so the game rolls native default perks.
+   * level and quantity; empty slots get a freshly minted instance id. Weapons
+   * and armour reset plugs to null (native default perks); the subclass keeps
+   * its plugs, since its abilities come from the character's own ability entries.
    */
   function applySwap(charIndex, slot, newHash) {
     const char = state.root.state.characters[charIndex];
     if (!char.equipment) { char.equipment = {}; }
     const existing = char.equipment[slot];
+    const isSubclass = slot === "subclass";
 
     if (existing && typeof existing === "object") {
       existing.definition_hash = newHash;
-      existing.plugs = null;
+      if (!isSubclass) { existing.plugs = null; }
     } else {
       char.equipment[slot] = {
         instance_soid: mintInstanceSoid(),

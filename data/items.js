@@ -6,11 +6,12 @@
  * (Season of Arrivals). Loaded as a plain script so the tool works by just
  * double-clicking index.html.
  *
- *   weapons: { name, hash:"0x…", decimal, slot, element, type, tier }   (dropdown)
- *   armor:   { name, hash:"0x…", decimal, slot, class(0 Titan|1 Hunter|2 Warlock|3 any), type, tier }
- *   names:   { decimal: name }   (display lookup for ANY equipped in-build item, all tiers)
+ *   weapons:    { name, hash:"0x…", decimal, slot, element, type, tier }   (dropdown)
+ *   armor:      { name, hash:"0x…", decimal, slot, class(0 Titan|1 Hunter|2 Warlock|3 any), type, tier }
+ *   subclasses: { name, hash:"0x…", decimal, class, element }
+ *   names:      { decimal: name }   (display lookup for ANY equipped in-build item, all tiers)
  *
- * 530 weapons · 1209 armour pieces · 4469 named items.
+ * 530 weapons · 1209 armour · 9 subclasses · 4478 named items.
  */
 window.SUNRISE_ITEM_DB = {
  "weapons": [
@@ -15668,6 +15669,71 @@ window.SUNRISE_ITEM_DB = {
    "class": 2
   }
  ],
+ "subclasses": [
+  {
+   "name": "Sentinel",
+   "hash": "0xC99B33E9",
+   "decimal": 3382391785,
+   "class": 0,
+   "element": "Void"
+  },
+  {
+   "name": "Striker",
+   "hash": "0xB0554739",
+   "decimal": 2958378809,
+   "class": 0,
+   "element": "Arc"
+  },
+  {
+   "name": "Sunbreaker",
+   "hash": "0xB920CE9A",
+   "decimal": 3105935002,
+   "class": 0,
+   "element": "Solar"
+  },
+  {
+   "name": "Arcstrider",
+   "hash": "0x4F91DC97",
+   "decimal": 1334959255,
+   "class": 1,
+   "element": "Arc"
+  },
+  {
+   "name": "Gunslinger",
+   "hash": "0xD8B8D1FC",
+   "decimal": 3635991036,
+   "class": 1,
+   "element": "Solar"
+  },
+  {
+   "name": "Nightstalker",
+   "hash": "0xC0483D8B",
+   "decimal": 3225959819,
+   "class": 1,
+   "element": "Void"
+  },
+  {
+   "name": "Dawnblade",
+   "hash": "0xCF88FEA5",
+   "decimal": 3481861797,
+   "class": 2,
+   "element": "Solar"
+  },
+  {
+   "name": "Stormcaller",
+   "hash": "0x686A154A",
+   "decimal": 1751782730,
+   "class": 2,
+   "element": "Arc"
+  },
+  {
+   "name": "Voidwalker",
+   "hash": "0xE7BC88B0",
+   "decimal": 3887892656,
+   "class": 2,
+   "element": "Void"
+  }
+ ],
  "names": {
   "423789": "Mythos Hack 4.1",
   "4425887": "The Time-Worn Spire",
@@ -17079,6 +17145,7 @@ window.SUNRISE_ITEM_DB = {
   "1331482397": "MIDA Multi-Tool",
   "1331814296": "Wise Warlock Bond",
   "1333087155": "Ankaa Seeker IV",
+  "1334959255": "Arcstrider",
   "1337167606": "Iron Truage Greaves",
   "1339294334": "Cloak of Remembrance",
   "1339362514": "Stochastic Variable",
@@ -17536,6 +17603,7 @@ window.SUNRISE_ITEM_DB = {
   "1747063685": "Stormdancer's Brace",
   "1749589787": "High-Minded Complex",
   "1751069659": "BrayTech Sn0Helm",
+  "1751782730": "Stormcaller",
   "1752028469": "Gensym Knight Bond",
   "1752237812": "Ancient Apocalypse Gloves",
   "1752585070": "BrayTech Winter Wolf",
@@ -18795,6 +18863,7 @@ window.SUNRISE_ITEM_DB = {
   "2956899553": "Hood of Optimacy",
   "2957367743": "Toil and Trouble",
   "2957542878": "Living Memory",
+  "2958378809": "Striker",
   "2958870416": "Mark of Optimacy",
   "2959022889": "Chiron's Cure",
   "2959986506": "Prophet Snow",
@@ -18926,6 +18995,7 @@ window.SUNRISE_ITEM_DB = {
   "3100452337": "Dreaded Venture",
   "3102366928": "Atonement Tau",
   "3103335676": "Temptation's Bond",
+  "3105935002": "Sunbreaker",
   "3108321700": "Penumbral Bond",
   "3108883530": "Kairos Function Mark",
   "3110698812": "Tarrabah",
@@ -19049,6 +19119,7 @@ window.SUNRISE_ITEM_DB = {
   "3222518097": "Anonymous Autumn",
   "3223280471": "Swordflight 4.1",
   "3225160391": "Scatterhorn Boots",
+  "3225959819": "Nightstalker",
   "3227674085": "Boots of the Great Hunt",
   "3229389575": "Noble Constant Type 2",
   "3229455225": "Scavenger Suit",
@@ -19213,6 +19284,7 @@ window.SUNRISE_ITEM_DB = {
   "3381022971": "Nezarec's Sin",
   "3381714035": "Qiao's Strides",
   "3381758732": "Shadow's Robes",
+  "3382391785": "Sentinel",
   "3382396922": "Primal Siege Type 1",
   "3383958216": "Harmony-21",
   "3383958217": "Furina-2mg",
@@ -19304,6 +19376,7 @@ window.SUNRISE_ITEM_DB = {
   "3471587229": "Wise Warlock Boots",
   "3472216012": "Iron Fellowship Plate",
   "3475929306": "Philomath Bond",
+  "3481861797": "Dawnblade",
   "3483546829": "Wing Discipline",
   "3483602905": "Mark of Inquisition",
   "3483984579": "Shadow's Vest",
@@ -19476,6 +19549,7 @@ window.SUNRISE_ITEM_DB = {
   "3634078494": "Prodigal Gloves",
   "3634634222": "Symmetrists' Habit",
   "3634942770": "Eimin-Tin Ritual Mask",
+  "3635991036": "Gunslinger",
   "3636943392": "Notorious Invader Helm",
   "3636943394": "Illicit Invader Helm",
   "3636943395": "Outlawed Invader Helm",
@@ -19740,6 +19814,7 @@ window.SUNRISE_ITEM_DB = {
   "3885104741": "Hardcase Battleplate",
   "3886263130": "I Am Alive",
   "3887559710": "Gauntlets of Exaltation",
+  "3887892656": "Voidwalker",
   "3889633083": "Grips of the Great Hunt",
   "3889907763": "Royal Dispensation II",
   "3890232472": "Anti-Extinction Legs",
