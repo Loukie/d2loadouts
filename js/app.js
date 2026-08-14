@@ -197,11 +197,44 @@
       2: [{ value: 4, label: "Strafe Glide" }, { value: 5, label: "Burst Glide" }, { value: 6, label: "Balanced Glide" }],
     },
   };
-  // Which preset lists are confirmed in-game (vs best-guess order to verify).
+  // Which per-class preset lists are confirmed in-game (vs best-guess order).
   const PRESET_CONFIRMED = {
     class_ability: { 0: true },
     movement_ability: { 0: true },
   };
+
+  // Grenade/melee are element-specific, so they key off the subclass hash
+  // (UPPERCASE) rather than the class. Same index positions across subclasses,
+  // different names. Keys are the definition_hash upper-cased.
+  const ABILITY_PRESETS_BY_SUBCLASS = {
+    grenade_ability: {
+      "0XB0554739": [ // Striker (Titan / Arc)
+        { value: 7, label: "Lightning Grenade" },
+        { value: 8, label: "Flashbang Grenade" },
+        { value: 9, label: "Pulse Grenade" },
+      ],
+    },
+  };
+  const SUBCLASS_PRESET_CONFIRMED = { grenade_ability: { "0XB0554739": true } };
+
+  function subclassHashOf(char) {
+    const h = char.equipment && char.equipment.subclass && char.equipment.subclass.definition_hash;
+    return typeof h === "string" ? h.toUpperCase() : null;
+  }
+
+  /** Returns { options, confirmed } for a field on this character, or null for a raw stepper. */
+  function resolvePreset(fieldKey, char) {
+    const sub = subclassHashOf(char);
+    const bySub = sub && ABILITY_PRESETS_BY_SUBCLASS[fieldKey] && ABILITY_PRESETS_BY_SUBCLASS[fieldKey][sub];
+    if (bySub) {
+      return { options: bySub, confirmed: !!(SUBCLASS_PRESET_CONFIRMED[fieldKey] && SUBCLASS_PRESET_CONFIRMED[fieldKey][sub]) };
+    }
+    const byClass = ABILITY_PRESETS[fieldKey] && ABILITY_PRESETS[fieldKey][char.class];
+    if (byClass) {
+      return { options: byClass, confirmed: !!(PRESET_CONFIRMED[fieldKey] && PRESET_CONFIRMED[fieldKey][char.class]) };
+    }
+    return null;
+  }
 
   function renderAbilitiesPanel(char) {
     const panel = document.createElement("div");
@@ -217,8 +250,8 @@
     panel.appendChild(note);
 
     for (const f of ABILITY_FIELDS) {
-      const presets = ABILITY_PRESETS[f.key] && ABILITY_PRESETS[f.key][char.class];
-      panel.appendChild(presets ? renderPresetRow(char, f, presets) : renderStepperRow(char, f));
+      const preset = resolvePreset(f.key, char);
+      panel.appendChild(preset ? renderPresetRow(char, f, preset.options, preset.confirmed) : renderStepperRow(char, f));
     }
     return panel;
   }
@@ -232,10 +265,9 @@
     return lbl;
   }
 
-  /** Named picker for a confirmed ability (buttons per known option). */
-  function renderPresetRow(char, f, presets) {
+  /** Named picker for a mapped ability (buttons per known option). */
+  function renderPresetRow(char, f, presets, confirmed) {
     const current = char[f.key];
-    const confirmed = PRESET_CONFIRMED[f.key] && PRESET_CONFIRMED[f.key][char.class];
     const row = document.createElement("div");
     row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
 
