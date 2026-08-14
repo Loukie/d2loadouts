@@ -219,8 +219,17 @@
         { value: 9, label: "Pulse Grenade" },
       ],
     },
+    super_ability: {
+      "0XB0554739": [ // Striker — the 2 distinct supers, at indices 10 and 20
+        { value: 10, label: "Fists of Havoc" },
+        { value: 20, label: "Thundercrash" },
+      ],
+    },
   };
-  const SUBCLASS_PRESET_CONFIRMED = { grenade_ability: { "0XB0554739": true } };
+  const SUBCLASS_PRESET_CONFIRMED = {
+    grenade_ability: { "0XB0554739": true },
+    super_ability: { "0XB0554739": true },
+  };
 
   function subclassHashOf(char) {
     const h = char.equipment && char.equipment.subclass && char.equipment.subclass.definition_hash;
@@ -249,10 +258,9 @@
     const note = document.createElement("div");
     note.className = "hint";
     note.style.marginBottom = "10px";
-    note.innerHTML = "Grenade, Jump and Class ability are mapped — pick freely. " +
-      "Super is a stepper for experimenting (Melee is 🔒 locked). Testing suggests only the active tree loads, so " +
-      "<strong>most Super values break the boot</strong> (known-good: 10). If one hangs, recover with Discard changes " +
-      "or delete settings.json and relaunch.";
+    note.innerHTML = "Mapped abilities are named pickers — choose freely. " +
+      "Anything shown as a number stepper is unmapped: safe to experiment, but off-values can <strong>break the boot</strong> " +
+      "(if one hangs, Discard changes or delete settings.json and relaunch). Melee is 🔒 locked (tree-bound).";
     panel.appendChild(note);
 
     for (const f of ABILITY_FIELDS) {
