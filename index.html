@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sunrise Loadout Editor</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1><span>Sunrise</span> Loadout Editor</h1>
+    <span class="tag">Offline · edits your settings.json · nothing leaves your PC</span>
+  </header>
+
+  <main>
+    <!-- Step 1: load file -->
+    <section class="card" id="loadCard">
+      <h2>1 · Load your character file</h2>
+      <div class="sub">This is the <code>settings.json</code> Sunrise uses for your characters.</div>
+      <div class="drop" id="drop">
+        <p><strong>Drop settings.json here</strong> or click to choose</p>
+        <p style="font-size:0.82rem">Your file is read in the browser only. Nothing is uploaded.</p>
+      </div>
+      <input type="file" id="fileInput" accept=".json,application/json" class="hidden" />
+      <div class="err" id="loadErr"></div>
+    </section>
+
+    <!-- Step 2: pick class -->
+    <section class="card hidden" id="classCard">
+      <h2>2 · Choose a Guardian</h2>
+      <div class="sub">Your file holds these characters. Pick one to edit its loadout.</div>
+      <div class="tabs" id="classTabs"></div>
+    </section>
+
+    <!-- Step 3: edit loadout -->
+    <section class="card hidden" id="editCard">
+      <h2>3 · Edit the loadout</h2>
+      <div class="sub">Click <em>Change</em> on any slot. Pick from the list or paste a light.gg link — the codes are handled for you.</div>
+      <div id="slots"></div>
+    </section>
+
+    <!-- Step 4: save -->
+    <section class="card hidden" id="saveCard">
+      <h2>4 · Save</h2>
+      <div class="sub">Download the edited file and drop it back where your <code>settings.json</code> lives.</div>
+      <div class="actions">
+        <button id="downloadBtn">Download settings.json</button>
+        <button class="ghost" id="resetBtn">Discard changes</button>
+      </div>
+      <div class="err" id="saveMsg"></div>
+    </section>
+
+    <p class="footer-note">
+      Community tool for the <a href="https://github.com/stanuwu/Sunrise" target="_blank" rel="noopener">Sunrise</a>
+      offline exploration mod. Not affiliated with Bungie. You must provide your own game.
+    </p>
+  </main>
+
+  <!-- Change-item modal -->
+  <dialog id="pickModal">
+    <form method="dialog">
+      <div class="modal-head" id="pickTitle">Change item</div>
+      <div class="modal-body">
+        <label class="hint">Pick from the list (items from this patch only)</label>
+        <select id="pickSelect"><option value="">— choose an item —</option></select>
+
+        <div style="margin:16px 0 6px" class="hint">…or paste a light.gg link / hash</div>
+        <div class="editor-row">
+          <input type="text" id="pickPaste" placeholder="https://www.light.gg/db/items/…  or  0xE516CF40  or  3843477312" />
+          <button type="button" class="ghost" id="pickApplyPaste">Use</button>
+        </div>
+        <div class="err" id="pickErr"></div>
+        <div class="hint" id="pickPreview"></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="ghost" id="pickCancel">Cancel</button>
+        <button type="button" id="pickConfirm">Set item</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="data/items.js"></script>
+  <script src="js/hash.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "_note": "Master item list for the Sunrise loadout editor. Populated from the game manifest for the last Shadowkeep patch (Season of Arrivals). Every entry is an item that existed in that build, so the picker can only ever offer valid gear. 'hash' is the Sunrise value ('0x' + upper hex); 'decimal' is the light.gg id. This file is generated — see build notes. Until it is populated, use the 'Paste a light.gg link or hash' box in the app.",
+  "_schema": {
+    "name": "string  — display name",
+    "hash": "string  — Sunrise definition_hash, e.g. '0xE516CF40'",
+    "decimal": "number — light.gg item id",
+    "slot": "string  — kinetic | energy | heavy | helmet | gauntlets | chest | legs | class_item",
+    "element": "string — Kinetic | Arc | Solar | Void | Stasis (weapons)",
+    "type": "string  — e.g. Hand Cannon, Auto Rifle, Helmet",
+    "tier": "string  — Common | Rare | Legendary | Exotic",
+    "class": "number — armor only: 0 Titan | 1 Hunter | 2 Warlock (weapons: omit)"
+  },
+  "weapons": [],
+  "armor": []
+}

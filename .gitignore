@@ -1,0 +1,7 @@
+# local test artifact — the mod's default character file, not part of the tool
+sample_settings.json
+
+# editor / OS noise
+.DS_Store
+Thumbs.db
+*.log
