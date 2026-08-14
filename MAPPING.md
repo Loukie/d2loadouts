@@ -17,7 +17,7 @@ Every subclass uses the **same index positions** — only the names change per s
 Notes / findings:
 - **0–1** are the sprint/class region — setting anything there breaks the character (→ stuck loading / class-select).
 - Each tree occupies a ~10-index block: super at the front (10, then 20), then melee, then perk nodes (12–19, etc.). Pointing `super_ability` at a perk node breaks the boot.
-- **Super**: exactly two distinct supers per subclass. `10` = the common super (shared by two trees), `20` = the middle-tree super. A subclass's third tree reuses the common super, so there is no third super to select.
+- **Super**: `10` is each subclass's default super and always works. `20` is the second super **only when it is a genuinely distinct super** (Thundercrash, Blade Barrage, etc.). When the second super is a *defensive variant* of the first (Whirlwind Guard, Banner Shield), it is not a selectable entry — `20` breaks and its real index is unknown. Sentinel is a special case with three supers (Ward of Dawn at `10`; Banner Shield and Sentinel Shield unreachable).
 - **Melee is tree-bound**: only the active tree loads, so `11` is the only valid melee. Changing it breaks the boot.
 - **Bad values are NOT ignored** — most out-of-range/wrong values break the character and drop you to the character-creation screen (recover: delete `settings.json` and relaunch).
 
@@ -55,7 +55,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 
 ## Supers — `super_ability` (per subclass)
 
-| Subclass | 10 (common) | 20 (middle tree) |
+| Subclass | 10 (default) | 20 (second super) |
 | --- | --- | --- |
 | Striker | Fists of Havoc ✅ | Thundercrash ✅ |
 | Sunbreaker | Hammer of Sol ✅ | Burning Maul ✅ |
