@@ -213,22 +213,53 @@
   // different names. Keys are the definition_hash upper-cased.
   const ABILITY_PRESETS_BY_SUBCLASS = {
     grenade_ability: {
+      // Striker order confirmed in-game; the rest are best-guess order (verify).
       "0XB0554739": [ // Striker (Titan / Arc)
         { value: 7, label: "Lightning Grenade" },
         { value: 8, label: "Flashbang Grenade" },
         { value: 9, label: "Pulse Grenade" },
       ],
+      "0XB920CE9A": [ // Sunbreaker (Titan / Solar)
+        { value: 7, label: "Incendiary Grenade" }, { value: 8, label: "Fusion Grenade" }, { value: 9, label: "Thermite Grenade" },
+      ],
+      "0XC99B33E9": [ // Sentinel (Titan / Void)
+        { value: 7, label: "Magnetic Grenade" }, { value: 8, label: "Voidwall Grenade" }, { value: 9, label: "Suppressor Grenade" },
+      ],
+      "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar)
+        { value: 7, label: "Incendiary Grenade" }, { value: 8, label: "Swarm Grenade" }, { value: 9, label: "Tripmine Grenade" },
+      ],
+      "0X4F91DC97": [ // Arcstrider (Hunter / Arc)
+        { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Flux Grenade" }, { value: 9, label: "Skip Grenade" },
+      ],
+      "0XC0483D8B": [ // Nightstalker (Hunter / Void)
+        { value: 7, label: "Spike Grenade" }, { value: 8, label: "Voidwall Grenade" }, { value: 9, label: "Vortex Grenade" },
+      ],
+      "0XCF88FEA5": [ // Dawnblade (Warlock / Solar)
+        { value: 7, label: "Solar Grenade" }, { value: 8, label: "Firebolt Grenade" }, { value: 9, label: "Fusion Grenade" },
+      ],
+      "0X686A154A": [ // Stormcaller (Warlock / Arc)
+        { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Pulse Grenade" }, { value: 9, label: "Storm Grenade" },
+      ],
+      "0XE7BC88B0": [ // Voidwalker (Warlock / Void)
+        { value: 7, label: "Vortex Grenade" }, { value: 8, label: "Scatter Grenade" }, { value: 9, label: "Axion Bolt" },
+      ],
     },
     super_ability: {
-      "0XB0554739": [ // Striker — the 2 distinct supers, at indices 10 and 20
-        { value: 10, label: "Fists of Havoc" },
-        { value: 20, label: "Thundercrash" },
-      ],
+      // 10 = the subclass's common super, 20 = its middle-tree super.
+      "0XB0554739": [{ value: 10, label: "Fists of Havoc" }, { value: 20, label: "Thundercrash" }], // Striker
+      "0XB920CE9A": [{ value: 10, label: "Hammer of Sol" }, { value: 20, label: "Burning Maul" }], // Sunbreaker
+      "0XC99B33E9": [{ value: 10, label: "Sentinel Shield" }, { value: 20, label: "Banner Shield" }], // Sentinel
+      "0XD8B8D1FC": [{ value: 10, label: "Golden Gun" }, { value: 20, label: "Blade Barrage" }], // Gunslinger
+      "0X4F91DC97": [{ value: 10, label: "Arc Staff" }, { value: 20, label: "Whirlwind Guard" }], // Arcstrider
+      "0XC0483D8B": [{ value: 10, label: "Shadowshot" }, { value: 20, label: "Spectral Blades" }], // Nightstalker
+      "0XCF88FEA5": [{ value: 10, label: "Daybreak" }, { value: 20, label: "Well of Radiance" }], // Dawnblade
+      "0X686A154A": [{ value: 10, label: "Stormtrance" }, { value: 20, label: "Chaos Reach" }], // Stormcaller
+      "0XE7BC88B0": [{ value: 10, label: "Nova Bomb" }, { value: 20, label: "Nova Warp" }], // Voidwalker
     },
   };
   const SUBCLASS_PRESET_CONFIRMED = {
     grenade_ability: { "0XB0554739": true },
-    super_ability: { "0XB0554739": true },
+    super_ability: { "0XB0554739": true }, // Striker confirmed; others best-guess (verify in-game)
   };
 
   function subclassHashOf(char) {
