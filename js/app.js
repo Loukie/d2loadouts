@@ -37,6 +37,7 @@
     charIndex: 0,
     changed: new Set(), // "charIndex:slot"
     pending: null, // { charIndex, slot, group, newHash }
+    floatKeys: new Set(), // keys whose values must stay floats (e.g. 1.0, not 1)
   };
 
   const $ = (id) => document.getElementById(id);
@@ -54,6 +55,7 @@
         }
         state.root = root;
         state.original = JSON.parse(reader.result);
+        state.floatKeys = detectFloatKeys(reader.result);
         state.fileName = file.name || "settings.json";
         state.charIndex = 0;
         state.changed.clear();
@@ -324,7 +326,7 @@
   // ---- Save ---------------------------------------------------------------
 
   function download() {
-    const text = JSON.stringify(state.root, null, 2);
+    const text = serializeConfig(state.root, state.floatKeys);
     const blob = new Blob([text], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -349,6 +351,38 @@
     renderClasses();
     renderSlots();
     renderName();
+  }
+
+  // ---- Float-safe serialization -------------------------------------------
+  // Sunrise's strict JSON parser treats 1.0 (float) and 1 (int) as different
+  // types. Browsers collapse 1.0 -> 1 when parsing, so JSON.stringify would
+  // emit ints where floats are required and the mod fails to boot. We record
+  // which keys held float values in the source file and re-emit those as
+  // floats on save.
+
+  const FLOAT_KEY_RE = /"([A-Za-z0-9_]+)"\s*:\s*-?\d+\.\d+/g;
+  const KNOWN_FLOAT_KEYS = [
+    "appearance_value", "ads_sensitivity_modifier", "calibration_primary", "calibration_alpha",
+  ];
+
+  function detectFloatKeys(rawText) {
+    const set = new Set(KNOWN_FLOAT_KEYS);
+    let m;
+    FLOAT_KEY_RE.lastIndex = 0;
+    while ((m = FLOAT_KEY_RE.exec(rawText)) !== null) { set.add(m[1]); }
+    return set;
+  }
+
+  /** JSON.stringify, but integer values under float keys are emitted as "N.0". */
+  function serializeConfig(root, floatKeys) {
+    const SENT = "@~FLOAT~@";
+    const text = JSON.stringify(root, (key, value) => {
+      if (floatKeys.has(key) && typeof value === "number" && Number.isInteger(value)) {
+        return SENT + value + SENT;
+      }
+      return value;
+    }, 2);
+    return text.replace(new RegExp('"' + SENT + '(-?\\d+)' + SENT + '"', "g"), "$1.0");
   }
 
   // ---- Utils --------------------------------------------------------------
