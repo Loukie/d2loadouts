@@ -226,7 +226,7 @@
         { value: 7, label: "Magnetic Grenade" }, { value: 8, label: "Voidwall Grenade" }, { value: 9, label: "Suppressor Grenade" },
       ],
       "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar) — confirmed in-game
-        { value: 7, label: "Tripmine Grenade" }, { value: 8, label: "Swarm Grenade" }, { value: 9, label: "Incendiary Grenade" },
+        { value: 7, label: "Tripmine Grenade" }, { value: 8, label: "Incendiary Grenade" }, { value: 9, label: "Swarm Grenade" },
       ],
       "0X4F91DC97": [ // Arcstrider (Hunter / Arc)
         { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Flux Grenade" }, { value: 9, label: "Skip Grenade" },
