@@ -14,12 +14,21 @@
   const ARMOR_SLOTS = ["helmet", "gauntlets", "chest", "legs", "class_item"];
   const SLOT_LABELS = { class_item: "Class Item" };
 
-  const DB = window.SUNRISE_ITEM_DB || { weapons: [], armor: [] };
+  const DB = window.SUNRISE_ITEM_DB || { weapons: [], armor: [], names: {} };
 
-  // Fast name lookup by decimal hash.
-  const NAME_BY_DECIMAL = new Map();
-  for (const w of DB.weapons) { NAME_BY_DECIMAL.set(w.decimal, w); }
-  for (const a of DB.armor) { NAME_BY_DECIMAL.set(a.decimal, a); }
+  // Rich lookup by decimal hash (dropdown items carry element/type/tier).
+  const ITEM_BY_DECIMAL = new Map();
+  for (const w of DB.weapons) { ITEM_BY_DECIMAL.set(w.decimal, w); }
+  for (const a of DB.armor) { ITEM_BY_DECIMAL.set(a.decimal, a); }
+
+  // Complete name lookup: covers every in-build item (all tiers), so any
+  // equipped piece resolves even when it isn't in the Legendary/Exotic dropdown.
+  const NAMES = DB.names || {};
+  function nameForDecimal(decimal) {
+    const rich = ITEM_BY_DECIMAL.get(decimal);
+    if (rich) { return rich.name; }
+    return NAMES[decimal] || NAMES[String(decimal)] || null;
+  }
 
   const state = {
     root: null,
@@ -92,13 +101,13 @@
     const hash = item.definition_hash;
     let decimal = null;
     try { decimal = SunriseHash.toDecimal(hash); } catch (_) { /* leave null */ }
-    const rec = decimal != null ? NAME_BY_DECIMAL.get(decimal) : null;
+    const name = decimal != null ? nameForDecimal(decimal) : null;
     return {
-      name: rec ? rec.name : "Unknown item",
+      name: name || "Unknown item",
       hash,
       decimal,
-      known: !!rec,
-      rec,
+      known: !!name,
+      rec: decimal != null ? ITEM_BY_DECIMAL.get(decimal) : null,
     };
   }
 
@@ -201,11 +210,11 @@
   }
 
   function setPreview(sunriseHash) {
-    const rec = NAME_BY_DECIMAL.get(SunriseHash.toDecimal(sunriseHash));
+    const name = nameForDecimal(SunriseHash.toDecimal(sunriseHash));
     const url = SunriseHash.lightggUrl(sunriseHash);
     $("pickPreview").innerHTML =
       `Will set <code>${escapeHtml(sunriseHash)}</code>` +
-      (rec ? ` — <strong>${escapeHtml(rec.name)}</strong>` : "") +
+      (name ? ` — <strong>${escapeHtml(name)}</strong>` : "") +
       ` · <a href="${url}" target="_blank" rel="noopener">preview on light.gg</a>`;
   }
 
