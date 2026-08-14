@@ -180,7 +180,7 @@
     { key: "super_ability", label: "Super" },
     { key: "melee_ability", label: "Melee" },
   ];
-  const ABILITY_MAX = 40;
+  const ABILITY_MAX = 300;
 
   // Testing suggests only the active tree loads, so super/melee are effectively
   // tree-bound. Super is left editable (stepper) for further experimentation;
