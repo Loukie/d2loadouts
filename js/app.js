@@ -182,10 +182,10 @@
   ];
   const ABILITY_MAX = 40;
 
-  // Confirmed by testing: the mod loads only the subclass's active tree, so the
-  // single super (10) and melee (11) entries are all that exist — every other
-  // value breaks. Super and melee are therefore locked read-only.
-  const LOCKED_ABILITIES = new Set(["super_ability", "melee_ability"]);
+  // Testing suggests only the active tree loads, so super/melee are effectively
+  // tree-bound. Super is left editable (stepper) for further experimentation;
+  // melee stays locked (confirmed). Off-values break the boot.
+  const LOCKED_ABILITIES = new Set(["melee_ability"]);
 
   // Confirmed index -> named option maps, discovered by in-game testing.
   // As we verify more (grenade/melee/jump/super), add them here and they turn
@@ -249,9 +249,10 @@
     const note = document.createElement("div");
     note.className = "hint";
     note.style.marginBottom = "10px";
-    note.innerHTML = "Grenade, Jump and Class ability are yours to pick. " +
-      "Super and Melee are 🔒 locked — testing confirmed the mod only loads each subclass's default tree, " +
-      "so they can't be changed (every other value breaks the game). Pick a different subclass to change your super.";
+    note.innerHTML = "Grenade, Jump and Class ability are mapped — pick freely. " +
+      "Super is a stepper for experimenting (Melee is 🔒 locked). Testing suggests only the active tree loads, so " +
+      "<strong>most Super values break the boot</strong> (known-good: 10). If one hangs, recover with Discard changes " +
+      "or delete settings.json and relaunch.";
     panel.appendChild(note);
 
     for (const f of ABILITY_FIELDS) {
