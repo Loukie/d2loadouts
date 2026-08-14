@@ -179,75 +179,120 @@
   // out-of-range values are safely ignored by the mod (no boot break), so the
   // user can experiment to find supers/abilities.
 
-  // Authoritative ability data extracted from the game files (Sundial catalog):
-  // perClass[classType] = { movement:[{v,label}], class_ability:[{v,label}] }
-  // bySubclass[UPPERHASH] = { grenade:[{v,label}], attunements:[{name, super:{v,label}, melee:{v,label}}] }
-  const AB = window.SUNRISE_ABILITIES || { perClass: {}, bySubclass: {} };
+  const ABILITY_FIELDS = [
+    { key: "grenade_ability", label: "Grenade" },
+    { key: "movement_ability", label: "Jump / movement" },
+    { key: "class_ability", label: "Class ability" },
+    { key: "super_ability", label: "Super" },
+    { key: "melee_ability", label: "Melee" },
+  ];
+  const ABILITY_MAX = 300;
+
+  // Testing suggests only the active tree loads, so super/melee are effectively
+  // tree-bound. Super is left editable (stepper) for further experimentation;
+  // melee stays locked (confirmed). Off-values break the boot.
+  const LOCKED_ABILITIES = new Set(["melee_ability"]);
+
+  // Confirmed index -> named option maps, discovered by in-game testing.
+  // As we verify more (grenade/melee/jump/super), add them here and they turn
+  // from raw steppers into clean named pickers. class: 0 Titan, 1 Hunter, 2 Warlock.
+  const ABILITY_PRESETS = {
+    class_ability: {
+      0: [{ value: 2, label: "Towering Barricade" }, { value: 3, label: "Rally Barricade" }],
+      1: [{ value: 2, label: "Marksman's Dodge" }, { value: 3, label: "Gambler's Dodge" }],
+      2: [{ value: 2, label: "Healing Rift" }, { value: 3, label: "Empowering Rift" }],
+    },
+    movement_ability: {
+      0: [{ value: 4, label: "High Lift" }, { value: 5, label: "Strafe Lift" }, { value: 6, label: "Catapult Lift" }],
+      1: [{ value: 4, label: "High Jump" }, { value: 5, label: "Strafe Jump" }, { value: 6, label: "Triple Jump" }],
+      2: [{ value: 4, label: "Strafe Glide" }, { value: 5, label: "Burst Glide" }, { value: 6, label: "Balanced Glide" }],
+    },
+  };
+  // Which per-class preset lists are confirmed in-game (vs best-guess order).
+  const PRESET_CONFIRMED = {
+    class_ability: { 0: true, 1: true, 2: true }, // Titan, Hunter, Warlock confirmed
+    movement_ability: { 0: true, 1: true, 2: true },
+  };
+
+  // Grenade/melee are element-specific, so they key off the subclass hash
+  // (UPPERCASE) rather than the class. Same index positions across subclasses,
+  // different names. Keys are the definition_hash upper-cased.
+  const ABILITY_PRESETS_BY_SUBCLASS = {
+    grenade_ability: {
+      // Striker order confirmed in-game; the rest are best-guess order (verify).
+      "0XB0554739": [ // Striker (Titan / Arc)
+        { value: 7, label: "Lightning Grenade" },
+        { value: 8, label: "Flashbang Grenade" },
+        { value: 9, label: "Pulse Grenade" },
+      ],
+      "0XB920CE9A": [ // Sunbreaker (Titan / Solar) — confirmed in-game
+        { value: 7, label: "Fusion Grenade" }, { value: 8, label: "Incendiary Grenade" }, { value: 9, label: "Thermite Grenade" },
+      ],
+      "0XC99B33E9": [ // Sentinel (Titan / Void) — grenades confirmed in-game
+        { value: 7, label: "Suppressor Grenade" }, { value: 8, label: "Magnetic Grenade" }, { value: 9, label: "Voidwall Grenade" },
+      ],
+      "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar) — confirmed in-game
+        { value: 7, label: "Tripmine Grenade" }, { value: 8, label: "Incendiary Grenade" }, { value: 9, label: "Swarm Grenade" },
+      ],
+      "0X4F91DC97": [ // Arcstrider (Hunter / Arc) — confirmed in-game
+        { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Skip Grenade" }, { value: 9, label: "Flux Grenade" },
+      ],
+      "0XC0483D8B": [ // Nightstalker (Hunter / Void) — confirmed in-game
+        { value: 7, label: "Spike Grenade" }, { value: 8, label: "Vortex Grenade" }, { value: 9, label: "Voidwall Grenade" },
+      ],
+      "0XCF88FEA5": [ // Dawnblade (Warlock / Solar) — confirmed in-game
+        { value: 7, label: "Fusion Grenade" }, { value: 8, label: "Solar Grenade" }, { value: 9, label: "Firebolt Grenade" },
+      ],
+      "0X686A154A": [ // Stormcaller (Warlock / Arc) — confirmed in-game
+        { value: 7, label: "Storm Grenade" }, { value: 8, label: "Arcbolt Grenade" }, { value: 9, label: "Pulse Grenade" },
+      ],
+      "0XE7BC88B0": [ // Voidwalker (Warlock / Void) — confirmed in-game
+        { value: 7, label: "Scatter Grenade" }, { value: 8, label: "Vortex Grenade" }, { value: 9, label: "Axion Bolt" },
+      ],
+    },
+  };
+  const SUBCLASS_PRESET_CONFIRMED = {
+    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true, "0X4F91DC97": true, "0XC0483D8B": true, "0XCF88FEA5": true, "0X686A154A": true, "0XE7BC88B0": true }, // + Voidwalker (ALL 9 done)
+  };
+
+  // Supers get their own map so the picker shows EVERY super by name and greys
+  // out the ones whose safe index isn't verified yet (ok:false; value may be null
+  // when the index is unknown). value 10 = each subclass's default super and
+  // always boots. super=20 is NOT universal — it must be equip-tested per
+  // subclass (Sentinel's 20 breaks, so its extra supers are greyed out).
+  const SUPER_OPTIONS = {
+    "0XB0554739": [{ value: 10, label: "Fists of Havoc", ok: true }, { value: 20, label: "Thundercrash", ok: true }], // Striker
+    "0XB920CE9A": [{ value: 10, label: "Hammer of Sol", ok: true }, { value: 20, label: "Burning Maul", ok: true }], // Sunbreaker
+    "0XC99B33E9": [{ value: 10, label: "Ward of Dawn", ok: true }, { value: null, label: "Banner Shield", ok: false }, { value: null, label: "Sentinel Shield", ok: false }], // Sentinel (3 supers)
+    "0XD8B8D1FC": [{ value: 10, label: "Golden Gun", ok: true }, { value: 20, label: "Blade Barrage", ok: true }], // Gunslinger
+    "0X4F91DC97": [{ value: 10, label: "Arc Staff", ok: true }, { value: null, label: "Whirlwind Guard", ok: false }], // Arcstrider (variant super — 20 breaks, index unknown)
+    "0XC0483D8B": [{ value: 10, label: "Shadowshot", ok: true }, { value: 20, label: "Spectral Blades", ok: true }], // Nightstalker
+    "0XCF88FEA5": [{ value: 10, label: "Daybreak", ok: true }, { value: 20, label: "Well of Radiance", ok: true }], // Dawnblade
+    "0X686A154A": [{ value: 10, label: "Stormtrance", ok: true }, { value: 20, label: "Chaos Reach", ok: true }], // Stormcaller
+    "0XE7BC88B0": [{ value: 10, label: "Nova Bomb", ok: true }, { value: 20, label: "Nova Warp", ok: true }], // Voidwalker
+  };
 
   function subclassHashOf(char) {
     const h = char.equipment && char.equipment.subclass && char.equipment.subclass.definition_hash;
     return typeof h === "string" ? h.toUpperCase() : null;
   }
 
-  /** Name of the super/melee currently set, resolved from the subclass's attunements. */
-  function superName(data, v) {
-    for (const a of data.attunements) { if (a.super.v === v) { return a.super.label; } }
-    return null;
-  }
-  function meleeName(data, v) {
-    for (const a of data.attunements) { if (a.melee.v === v) { return a.melee.label; } }
-    return null;
-  }
-
-  function setAbilityValue(char, key, value) {
-    char[key] = value;
-    state.changed.add(`${state.charIndex}:${key}`);
-    renderSlots();
-  }
-
-  /** An attunement (tree) sets super and melee together — the coherent pair. */
-  function setAttunement(char, att) {
-    char.super_ability = att.super.v;
-    char.melee_ability = att.melee.v;
-    state.changed.add(`${state.charIndex}:attunement`);
-    renderSlots();
-  }
-
-  function abilityLabel(text, changedKey) {
-    const changed = changedKey && state.changed.has(`${state.charIndex}:${changedKey}`);
-    const lbl = document.createElement("div");
-    lbl.className = "slot-name";
-    lbl.style.cssText = "font-weight:600;width:150px";
-    lbl.innerHTML = escapeHtml(text) + (changed ? ' <span class="badge">changed</span>' : "");
-    return lbl;
-  }
-
-  /** A row of named option buttons. options: [{v,label}]; onSelect(option). */
-  function renderButtonRow(text, changedKey, options, currentValue, onSelect, tooltip) {
-    const row = document.createElement("div");
-    row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
-    row.appendChild(abilityLabel(text, changedKey));
-    for (const o of options) {
-      const btn = document.createElement("button");
-      btn.className = "tab" + (currentValue === o.v ? " active" : "");
-      btn.textContent = o.label;
-      if (tooltip) { btn.title = tooltip(o); }
-      btn.onclick = () => onSelect(o);
-      row.appendChild(btn);
+  /**
+   * Returns { options, confirmed: true } only for a CONFIRMED mapping; otherwise
+   * null so the ability renders as a raw stepper. We never show an unverified
+   * name as the selected ability — that would misrepresent the real loadout.
+   */
+  function resolvePreset(fieldKey, char) {
+    const sub = subclassHashOf(char);
+    if (sub && ABILITY_PRESETS_BY_SUBCLASS[fieldKey] && ABILITY_PRESETS_BY_SUBCLASS[fieldKey][sub]
+        && SUBCLASS_PRESET_CONFIRMED[fieldKey] && SUBCLASS_PRESET_CONFIRMED[fieldKey][sub]) {
+      return { options: ABILITY_PRESETS_BY_SUBCLASS[fieldKey][sub], confirmed: true };
     }
-    return row;
-  }
-
-  /** Read-only display row (used for the super/melee derived from the attunement). */
-  function renderInfoRow(text, valueText) {
-    const row = document.createElement("div");
-    row.style.cssText = "display:flex;gap:10px;align-items:center;margin-bottom:6px;opacity:0.8";
-    row.appendChild(abilityLabel(text, null));
-    const val = document.createElement("span");
-    val.className = "slot-current";
-    val.innerHTML = `<span class="name">${escapeHtml(valueText)}</span>`;
-    row.appendChild(val);
-    return row;
+    if (ABILITY_PRESETS[fieldKey] && ABILITY_PRESETS[fieldKey][char.class]
+        && PRESET_CONFIRMED[fieldKey] && PRESET_CONFIRMED[fieldKey][char.class]) {
+      return { options: ABILITY_PRESETS[fieldKey][char.class], confirmed: true };
+    }
+    return null;
   }
 
   function renderAbilitiesPanel(char) {
@@ -258,53 +303,136 @@
     const note = document.createElement("div");
     note.className = "hint";
     note.style.marginBottom = "10px";
-    note.innerHTML = "Pick an <strong>Attunement</strong> (tree) to set your Super + Melee together. " +
-      "Grenade, Jump and Class ability are chosen separately.";
+    note.innerHTML = "Mapped abilities are named pickers — choose freely. " +
+      "Anything shown as a number stepper is unmapped: safe to experiment, but off-values can <strong>break the boot</strong> " +
+      "(if one hangs, Discard changes or delete settings.json and relaunch). Melee is 🔒 locked (tree-bound).";
     panel.appendChild(note);
 
-    const sub = subclassHashOf(char);
-    const data = AB.bySubclass[sub];
-    const cls = AB.perClass[char.class];
-    if (!data || !cls) {
-      const warn = document.createElement("div");
-      warn.className = "hint";
-      warn.textContent = "(no ability data for this subclass)";
-      panel.appendChild(warn);
-      return panel;
+    for (const f of ABILITY_FIELDS) {
+      if (f.key === "super_ability") { panel.appendChild(renderSuperRow(char, f)); continue; }
+      if (LOCKED_ABILITIES.has(f.key)) { panel.appendChild(renderLockedRow(char, f)); continue; }
+      const preset = resolvePreset(f.key, char);
+      panel.appendChild(preset ? renderPresetRow(char, f, preset.options, preset.confirmed) : renderStepperRow(char, f));
     }
-
-    // Attunement (sets super + melee)
-    const current = data.attunements.find(
-      (a) => a.super.v === char.super_ability && a.melee.v === char.melee_ability
-    );
-    const attRow = document.createElement("div");
-    attRow.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
-    attRow.appendChild(abilityLabel("Attunement", "attunement"));
-    for (const a of data.attunements) {
-      const btn = document.createElement("button");
-      btn.className = "tab" + (current === a ? " active" : "");
-      btn.textContent = a.name;
-      btn.title = `Super: ${a.super.label} · Melee: ${a.melee.label}`;
-      btn.onclick = () => setAttunement(char, a);
-      attRow.appendChild(btn);
-    }
-    panel.appendChild(attRow);
-
-    // Super + Melee (read-only, derived from the attunement)
-    panel.appendChild(renderInfoRow("Super", superName(data, char.super_ability) || `#${char.super_ability}`));
-    panel.appendChild(renderInfoRow("Melee", meleeName(data, char.melee_ability) || `#${char.melee_ability}`));
-
-    // Grenade (per subclass)
-    panel.appendChild(renderButtonRow("Grenade", "grenade_ability", data.grenade, char.grenade_ability,
-      (o) => setAbilityValue(char, "grenade_ability", o.v)));
-    // Jump (per class)
-    panel.appendChild(renderButtonRow("Jump / movement", "movement_ability", cls.movement, char.movement_ability,
-      (o) => setAbilityValue(char, "movement_ability", o.v)));
-    // Class ability (per class)
-    panel.appendChild(renderButtonRow("Class ability", "class_ability", cls.class_ability, char.class_ability,
-      (o) => setAbilityValue(char, "class_ability", o.v)));
-
     return panel;
+  }
+
+  /** Super picker: every super named; unverified ones are greyed out (can't break the game). */
+  function renderSuperRow(char, f) {
+    const opts = SUPER_OPTIONS[subclassHashOf(char)];
+    if (!opts) { return renderStepperRow(char, f); }
+    const current = char[f.key];
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
+    const lbl = abilityLabel(f, char);
+    lbl.style.width = "150px";
+    row.appendChild(lbl);
+    for (const o of opts) {
+      const btn = document.createElement("button");
+      btn.textContent = o.label;
+      if (o.ok && o.value !== null) {
+        btn.className = "tab" + (current === o.value ? " active" : "");
+        btn.onclick = () => setAbility(char, f.key, o.value);
+      } else {
+        btn.className = "tab";
+        btn.disabled = true;
+        btn.style.opacity = "0.4";
+        btn.style.cursor = "not-allowed";
+        btn.title = "Index not verified yet — this one would break the game";
+      }
+      row.appendChild(btn);
+    }
+    return row;
+  }
+
+  /** Read-only row for a tree-bound ability (super / melee) that can't be changed safely. */
+  function renderLockedRow(char, f) {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:10px;align-items:center;margin-bottom:6px;opacity:0.75";
+    const lbl = abilityLabel(f, char);
+    lbl.style.width = "150px";
+    const val = document.createElement("span");
+    val.className = "slot-current";
+    val.innerHTML = `<code>${escapeHtml(String(char[f.key]))}</code>`;
+    const note = document.createElement("span");
+    note.className = "hint";
+    note.textContent = "🔒 set by the subclass's tree — changing it breaks the game";
+    row.appendChild(lbl);
+    row.appendChild(val);
+    row.appendChild(note);
+    return row;
+  }
+
+  function abilityLabel(f, char) {
+    const changed = state.changed.has(`${state.charIndex}:${f.key}`);
+    const lbl = document.createElement("div");
+    lbl.className = "slot-name";
+    lbl.style.fontWeight = "600";
+    lbl.innerHTML = f.label + (changed ? ' <span class="badge">changed</span>' : "");
+    return lbl;
+  }
+
+  /** Named picker for a mapped ability (buttons per known option). */
+  function renderPresetRow(char, f, presets, confirmed) {
+    const current = char[f.key];
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
+
+    const lbl = abilityLabel(f, char);
+    lbl.style.width = "150px";
+    row.appendChild(lbl);
+
+    for (const opt of presets) {
+      const btn = document.createElement("button");
+      btn.className = "tab" + (current === opt.value ? " active" : "");
+      btn.textContent = opt.label;
+      btn.onclick = () => setAbility(char, f.key, opt.value);
+      row.appendChild(btn);
+    }
+    if (!confirmed) {
+      const note = document.createElement("span");
+      note.className = "hint";
+      note.textContent = "(order unverified)";
+      row.appendChild(note);
+    }
+    return row;
+  }
+
+  /** Raw index stepper for an ability we haven't mapped yet. */
+  function renderStepperRow(char, f) {
+    const current = Number.isInteger(char[f.key]) ? char[f.key] : 0;
+    const row = document.createElement("div");
+    row.style.cssText = "display:grid;grid-template-columns:150px auto auto auto;gap:10px;align-items:center;margin-bottom:6px";
+
+    const minus = document.createElement("button");
+    minus.className = "ghost";
+    minus.textContent = "−";
+    minus.onclick = () => setAbility(char, f.key, current - 1);
+
+    const val = document.createElement("input");
+    val.type = "text";
+    val.value = current;
+    val.style.cssText = "width:64px;text-align:center";
+    val.onchange = () => setAbility(char, f.key, parseInt(val.value, 10));
+
+    const plus = document.createElement("button");
+    plus.className = "ghost";
+    plus.textContent = "+";
+    plus.onclick = () => setAbility(char, f.key, current + 1);
+
+    row.appendChild(abilityLabel(f, char));
+    row.appendChild(minus);
+    row.appendChild(val);
+    row.appendChild(plus);
+    return row;
+  }
+
+  function setAbility(char, key, value) {
+    if (!Number.isInteger(value)) { renderSlots(); return; }
+    const clamped = Math.max(0, Math.min(ABILITY_MAX, value));
+    char[key] = clamped;
+    state.changed.add(`${state.charIndex}:${key}`);
+    renderSlots();
   }
 
   function renderSlots() {
@@ -564,15 +692,14 @@
   }
 
   // Sunrise reads settings.json into a fixed 64 KB buffer and rejects anything
-  // larger ("too_large" -> "Problem reading game content"). Pretty-printing
-  // balloons the big arrays past that, so we emit COMPACT JSON (no indentation).
+  // larger ("too_large" -> "Problem reading game content").
   const CONFIG_BYTE_LIMIT = 64 * 1024;
 
   /**
-   * Serializes the config readably: objects and object-arrays are indented, but
-   * arrays of primitives (and arrays of number-pairs) stay on one line so the
-   * giant progression arrays don't balloon the file past the 64 KB limit. Float
-   * fields keep their decimal (1.0 not 1). Mirrors the mod's own format.
+   * Serializes readably: objects and object-arrays are indented, but arrays of
+   * primitives (and arrays of number-pairs) stay on one line so the giant
+   * progression arrays don't balloon past 64 KB. Float fields keep their decimal
+   * (1.0 not 1). Mirrors the mod's own format.
    */
   function serializeConfig(root, floatKeys) {
     const num = (v, key) =>
@@ -585,8 +712,6 @@
       if (t === "number") { return num(val, key); }
       if (t === "string") { return JSON.stringify(val); }
       if (Array.isArray(val)) {
-        // Multiline only when the array holds plain objects; primitive arrays and
-        // arrays-of-arrays (number pairs) stay compact on one line.
         const hasObj = val.some((x) => x && typeof x === "object" && !Array.isArray(x));
         if (!hasObj) {
           return "[" + val.map((x) => ser(x, key, indent)).join(", ") + "]";

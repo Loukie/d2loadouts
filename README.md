@@ -8,7 +8,7 @@ uploaded anywhere.
 
 ## Use it
 
-**Online (easiest):** just open **<https://loukie.github.io/d2loadouts/>** — nothing to
+**Online (easiest):** open **<https://loukie.github.io/d2loadouts/>** — nothing to
 download, runs entirely in your browser. Or grab the repo and open `index.html`
 locally (double-click it — no install, no server).
 
@@ -20,8 +20,7 @@ Then:
    - **Weapons / Armour** — click **Change**, pick from the named list or paste a
      [light.gg](https://www.light.gg) link / item hash.
    - **Subclass** — pick a different subclass for that class.
-   - **Abilities** — pick an **Attunement** (tree, which sets your super + melee),
-     plus **Grenade**, **Jump**, and **Class ability**.
+   - **Abilities** — Grenade, Jump, Class ability, and Super are named pickers.
    - **Guardian name** and **Body type**.
 4. **Download** and drop the file back where your `settings.json` lives, then
    launch the game.
@@ -35,20 +34,28 @@ that won't equip.
 | --- | --- | --- |
 | **Weapons** (kinetic / energy / heavy) | pick by name or paste a light.gg link | swapping resets perks to the item's defaults so nothing incompatible carries over |
 | **Armour** (helmet / gauntlets / chest / legs / class item) | pick by name | filtered to your Guardian's class |
-| **Subclass** | pick from the class's subclasses | element changes with it |
-| **Attunement** (tree) | pick the tree | sets your **super + melee** together |
+| **Subclass** | pick from the class's subclasses | element/super changes with it |
 | **Grenade** | named picker (per subclass) | |
 | **Jump** and **Class ability** | named picker (per class) | |
+| **Super** | named picker | see below |
 | **Guardian name** | text field | writes `steam.user.persona_name` |
 | **Body type** | Male / Female | *saved to the file, but this mod build renders a fixed character model, so it may not change on-screen* |
 
-### Attunements (supers & melees)
+### Supers
 
-Each subclass has **three attunements** (trees). Picking one sets your
-`super_ability` **and** `melee_ability` together as a matched pair — which is how
-the game actually works, and why *every* super is selectable, including the
-"defensive" ones (Banner Shield, Whirlwind Guard) that break if you set the super
-alone. The Super and Melee are shown read-only, derived from the chosen attunement.
+Each subclass shows all its supers by name. Ones we've verified are clickable;
+ones whose safe index isn't known are **greyed out** (so you can't break your
+game on one). Two subclasses have a greyed super:
+
+- **Sentinel** — Banner Shield / Sentinel Shield (only Ward of Dawn is reachable)
+- **Arcstrider** — Whirlwind Guard (only Arc Staff is reachable)
+
+These are *defensive variants* of the subclass's main super and don't sit at a
+selectable index. Everything else — all other supers, all grenades, jumps, and
+class abilities — is a working named picker.
+
+**Melee is locked** on every subclass: it's tied to the subclass's active tree
+and changing it breaks the game.
 
 ## How it works
 
@@ -83,12 +90,13 @@ values known to break, so this should be rare.)
 
 ## Credits
 
-- **Ability / attunement data — huge thanks to [Kyle Thompson](https://github.com/KyleThmpsn)
-  and his [Sundial](https://github.com/KyleThmpsn/sundial) editor.** Sundial reads
-  the super/melee/attunement values straight from the Shadowkeep game files, and
-  it's what let us pair each super with its correct melee (the "attunement" model)
-  after we'd been reverse-engineering it by hand. Go check out Sundial for the
-  full-featured, game-file-accurate editor (plugs, perks, cosmetics, and more).
+- **[Kyle Thompson](https://github.com/KyleThmpsn)** and his
+  **[Sundial](https://github.com/KyleThmpsn/sundial)** editor — a fuller, native
+  editor that reads ability data straight from the Shadowkeep game files. It
+  confirmed our ability names and revealed the super+melee "attunement" model.
+  Note: Sundial targets Sunrise **0.1**, and not all of those ability indices
+  transfer to **0.2**, so this browser tool sticks to what's verified on 0.2.
+  Go check out Sundial for the full-featured, game-file-accurate editor.
 - Built for the [Sunrise](https://github.com/stanuwu/Sunrise) offline exploration
   mod by [stanuwu](https://github.com/stanuwu).
 

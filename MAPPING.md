@@ -1,87 +1,81 @@
 # Subclass ability index map
 
-How the ability numbers in `settings.json` map to in-game abilities.
+How the ability numbers in `settings.json` map to in-game abilities, reverse-engineered by in-game testing on Sunrise **0.2**.
 
-Originally reverse-engineered by in-game testing, then completed with the
-**authoritative game-file data from [Kyle Thompsons Sundial](https://github.com/KyleThmpsn/sundial)** — thanks Kyle! The tool uses an
-**Attunement (tree) picker**: each attunement sets `super_ability` + `melee_ability`
-together as a coherent pair (setting the super alone breaks variant supers).
+Note: the full super/melee "attunement" pairing is documented in [Kyle Thompson's Sundial](https://github.com/KyleThmpsn/sundial) (extracted from the game files) — but those indices target Sunrise **0.1**, and 0.1's melee/variant-super indices do **not** transfer to 0.2 (0.2 "fixed some ability config issues"). So this map sticks to what's verified on 0.2: super `10`/`20`, melee `11`, and the greyed-out variant supers.
 
 ## The universal layout
 
-Every subclass uses the same index positions; only the names change.
+Every subclass uses the **same index positions** — only the names change per subclass. The character fields are:
 
-| Field | Index(es) | What it is |
+| Field (`settings.json`) | Index(es) | What it is |
 | --- | --- | --- |
-| `class_ability` | 2, 3 | two class abilities (per class) |
-| `movement_ability` | 4, 5, 6 | three jumps (per class) |
-| `grenade_ability` | 7, 8, 9 | three grenades (per subclass) |
-| `super_ability` + `melee_ability` | 10/11 · 10/15 · 20/21 | the 3 attunements (trees); super+melee are a pair |
+| `class_ability` | **2, 3** | the two class abilities (per class) |
+| `movement_ability` | **4, 5, 6** | the three jumps (per class) |
+| `grenade_ability` | **7, 8, 9** | the three grenades (per subclass) |
+| `super_ability` | **10, 20** | the two supers (per subclass) |
+| `melee_ability` | **11** | tree-bound — do not change (breaks) |
 
-- `0`–`1` are the sprint/class region — writing there breaks the character.
-- Each subclass has **3 attunements**: two share a super (`10`) with different melees (`11`, `15`), the third is `20`/`21`.
-- Bad/mismatched values break the character (recover: delete `settings.json`, relaunch).
+Notes / findings:
+- **0–1** are the sprint/class region — setting anything there breaks the character (→ stuck loading / class-select).
+- Each tree occupies a ~10-index block: super at the front (10, then 20), then melee, then perk nodes (12–19, etc.). Pointing `super_ability` at a perk node breaks the boot.
+- **Super**: `10` is each subclass's default super and always works. `20` is the second super **only when it is a genuinely distinct super** (Thundercrash, Blade Barrage, etc.). When the second super is a *defensive variant* of the first (Whirlwind Guard, Banner Shield), it is not a selectable entry — `20` breaks and its real index is unknown. Sentinel is a special case with three supers (Ward of Dawn at `10`; Banner Shield and Sentinel Shield unreachable).
+- **Melee is tree-bound**: only the active tree loads, so `11` is the only valid melee. Changing it breaks the boot.
+- **Bad values are NOT ignored** — most out-of-range/wrong values break the character and drop you to the character-creation screen (recover: delete `settings.json` and relaunch).
 
-## Class abilities (`class_ability`, per class)
+Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
+
+## Class abilities — `class_ability` (per class)
 
 | Class | 2 | 3 |
 | --- | --- | --- |
-| Titan | Towering Barricade | Rally Barricade |
-| Hunter | Marksman's Dodge | Gambler's Dodge |
-| Warlock | Healing Rift | Empowering Rift |
+| Titan | Towering Barricade ✅ | Rally Barricade ✅ |
+| Hunter | Marksman's Dodge ✅ | Gambler's Dodge ✅ |
+| Warlock | Healing Rift ✅ | Empowering Rift ✅ |
 
-## Jumps (`movement_ability`, per class)
+## Jumps — `movement_ability` (per class)
 
 | Class | 4 | 5 | 6 |
 | --- | --- | --- | --- |
-| Titan | High Lift | Strafe Lift | Catapult Lift |
-| Hunter | High Jump | Strafe Jump | Triple Jump |
-| Warlock | Strafe Glide | Blink | Burst Glide |
+| Titan | High Lift ✅ | Strafe Lift ✅ | Catapult Lift ✅ |
+| Hunter | High Jump ✅ | Strafe Jump ✅ | Triple Jump ✅ |
+| Warlock | Strafe Glide ✅ | Burst Glide ✅ | Balanced Glide ✅ |
 
-## Grenades (`grenade_ability`, per subclass)
+## Grenades — `grenade_ability` (per subclass)
 
 | Subclass | 7 | 8 | 9 |
 | --- | --- | --- | --- |
-| Striker | Lightning Grenade | Flashbang Grenade | Pulse Grenade |
-| Sunbreaker | Fusion Grenade | Incendiary Grenade | Thermite Grenade |
-| Sentinel | Suppressor Grenade | Magnetic Grenade | Voidwall Grenade |
-| Gunslinger | Tripmine Grenade | Incendiary Grenade | Swarm Grenade |
-| Arcstrider | Arcbolt Grenade | Skip Grenade | Flux Grenade |
-| Nightstalker | Voidwall Grenade | Vortex Grenade | Spike Grenade |
-| Dawnblade | Fusion Grenade | Solar Grenade | Firebolt Grenade |
-| Stormcaller | Storm Grenade | Arcbolt Grenade | Pulse Grenade |
-| Voidwalker | Scatter Grenade | Vortex Grenade | Axion Bolt |
+| Striker | Lightning ✅ | Flashbang ✅ | Pulse ✅ |
+| Sunbreaker | Fusion ✅ | Incendiary ✅ | Thermite ✅ |
+| Sentinel | Suppressor ✅ | Magnetic ✅ | Voidwall ✅ |
+| Gunslinger | Tripmine ✅ | Incendiary ✅ | Swarm ✅ |
+| Arcstrider | Arcbolt ✅ | Skip ✅ | Flux ✅ |
+| Nightstalker | Spike ✅ | Vortex ✅ | Voidwall ✅ |
+| Dawnblade | Fusion ✅ | Solar ✅ | Firebolt ✅ |
+| Stormcaller | Storm ✅ | Arcbolt ✅ | Pulse ✅ |
+| Voidwalker | Scatter ✅ | Vortex ✅ | Axion Bolt ✅ |
 
-## Attunements (trees) — sets `super_ability` + `melee_ability`
+## Supers — `super_ability` (per subclass)
 
-| Subclass | Attunement | Super | Melee |
-| --- | --- | --- | --- |
-| Striker | Code of the Earthshaker | Fists of Havoc (10) | Seismic Strike (11) |
-| Striker | Code of the Juggernaut | Fists of Havoc (10) | Frontal Assault (15) |
-| Striker | Code of the Missile | Thundercrash (20) | Ballistic Slam (21) |
-| Sunbreaker | Code of the Fire-Forged | Hammer of Sol (10) | Hammer Strike (11) |
-| Sunbreaker | Code of the Siegebreaker | Hammer of Sol (10) | Mortar Blast (15) |
-| Sunbreaker | Code of the Devastator | Burning Maul (20) | Throwing Hammer (21) |
-| Sentinel | Code of the Protector | Sentinel Shield (10) | Defensive Strike (11) |
-| Sentinel | Code of the Aggressor | Sentinel Shield (10) | Shield Bash (15) |
-| Sentinel | Code of the Commander | Banner Shield (20) | Tactical Strike (21) |
-| Gunslinger | Way of the Outlaw | Golden Gun (10) | Proximity Explosive Knife (11) |
-| Gunslinger | Way of the Sharpshooter | Golden Gun (10) | Weighted Knife (15) |
-| Gunslinger | Way of a Thousand Cuts | Blade Barrage (20) | Knife Trick (21) |
-| Arcstrider | Way of the Warrior | Arc Staff (10) | Combination Blow (11) |
-| Arcstrider | Way of the Wind | Arc Staff (10) | Disorienting Blow (15) |
-| Arcstrider | Way of the Current | Whirlwind Guard (20) | Tempest Strike (21) |
-| Nightstalker | Way of the Trapper | Shadowshot (10) | Snare Bomb (11) |
-| Nightstalker | Way of the Pathfinder | Shadowshot (10) | Vanish in Smoke (15) |
-| Nightstalker | Way of the Wraith | Spectral Blades (20) | Corrosive Smoke (21) |
-| Dawnblade | Attunement of Sky | Daybreak (10) | Celestial Fire (11) |
-| Dawnblade | Attunement of Flame | Daybreak (10) | Igniting Touch (15) |
-| Dawnblade | Attunement of Grace | Well of Radiance (20) | Guiding Flame (21) |
-| Stormcaller | Attunement of Conduction | Stormtrance (10) | Chain Lightning (11) |
-| Stormcaller | Attunement of the Elements | Stormtrance (10) | Rising Storm (15) |
-| Stormcaller | Attunement of Control | Chaos Reach (20) | Ball Lightning (21) |
-| Voidwalker | Attunement of Chaos | Nova Bomb (10) | Entropic Pull (11) |
-| Voidwalker | Attunement of Hunger | Nova Bomb (10) | Devour (15) |
-| Voidwalker | Attunement of Fission | Nova Warp (20) | Atomic Breach (21) |
+| Subclass | 10 (default) | 20 (second super) |
+| --- | --- | --- |
+| Striker | Fists of Havoc ✅ | Thundercrash ✅ |
+| Sunbreaker | Hammer of Sol ✅ | Burning Maul ✅ |
+| Sentinel | Ward of Dawn ✅ | Banner Shield ❌ (20 breaks — real index TBD) |
+| Gunslinger | Golden Gun ✅ | Blade Barrage ✅ |
+| Arcstrider | Arc Staff ✅ | Whirlwind Guard ❌ (variant — 20 breaks, index TBD) |
+| Nightstalker | Shadowshot ✅ | Spectral Blades ✅ |
+| Dawnblade | Daybreak ✅ | Well of Radiance ✅ |
+| Stormcaller | Stormtrance ✅ | Chaos Reach ✅ |
+| Voidwalker | Nova Bomb ✅ | Nova Warp ✅ |
 
-Recovery if the game hangs: delete `settings.json` and relaunch (the mod writes a fresh working default).
+## How to verify (quick loop)
+
+For each subclass, swap to it in the tool, then confirm the names by changing one number at a time:
+1. **Grenade** 7 → 8 → 9, read the grenade name each time.
+2. **Super** 20 (10 is the default), read the tree/super name.
+3. Report any that differ and the ⚠️ becomes ✅.
+
+**Variant-super rule:** a subclass's second super equips at index 20 only if it's a *distinct* super (Thundercrash, Blade Barrage, etc.). *Defensive variants* (Whirlwind Guard, Banner Shield) are not distinct entries, so 20 breaks and their real index is unknown.
+
+Recovery if a value hangs the game: delete `settings.json` and relaunch (the mod writes a fresh working default).
