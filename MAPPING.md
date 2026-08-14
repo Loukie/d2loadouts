@@ -61,7 +61,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Sunbreaker | Hammer of Sol ✅ | Burning Maul ✅ |
 | Sentinel | Ward of Dawn ✅ | Banner Shield ❌ (20 breaks — real index TBD) |
 | Gunslinger | Golden Gun ✅ | Blade Barrage ✅ |
-| Arcstrider | Arc Staff ⚠️ | Whirlwind Guard ⚠️ |
+| Arcstrider | Arc Staff ✅ | Whirlwind Guard ❌ (variant — 20 breaks, index TBD) |
 | Nightstalker | Shadowshot ⚠️ | Spectral Blades ⚠️ |
 | Dawnblade | Daybreak ⚠️ | Well of Radiance ⚠️ |
 | Stormcaller | Stormtrance ⚠️ | Chaos Reach ⚠️ |
@@ -73,5 +73,7 @@ For each subclass, swap to it in the tool, then confirm the names by changing on
 1. **Grenade** 7 → 8 → 9, read the grenade name each time.
 2. **Super** 20 (10 is the default), read the tree/super name.
 3. Report any that differ and the ⚠️ becomes ✅.
+
+**Variant-super rule:** a subclass's second super equips at index 20 only if it's a *distinct* super (Thundercrash, Blade Barrage, etc.). *Defensive variants* (Whirlwind Guard, Banner Shield) are not distinct entries, so 20 breaks and their real index is unknown.
 
 Recovery if a value hangs the game: delete `settings.json` and relaunch (the mod writes a fresh working default).

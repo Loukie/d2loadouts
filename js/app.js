@@ -259,7 +259,7 @@
     "0XB920CE9A": [{ value: 10, label: "Hammer of Sol", ok: true }, { value: 20, label: "Burning Maul", ok: true }], // Sunbreaker
     "0XC99B33E9": [{ value: 10, label: "Ward of Dawn", ok: true }, { value: null, label: "Banner Shield", ok: false }, { value: null, label: "Sentinel Shield", ok: false }], // Sentinel (3 supers)
     "0XD8B8D1FC": [{ value: 10, label: "Golden Gun", ok: true }, { value: 20, label: "Blade Barrage", ok: true }], // Gunslinger
-    "0X4F91DC97": [{ value: 10, label: "Arc Staff", ok: true }, { value: 20, label: "Whirlwind Guard", ok: false }], // Arcstrider
+    "0X4F91DC97": [{ value: 10, label: "Arc Staff", ok: true }, { value: null, label: "Whirlwind Guard", ok: false }], // Arcstrider (variant super — 20 breaks, index unknown)
     "0XC0483D8B": [{ value: 10, label: "Shadowshot", ok: true }, { value: 20, label: "Spectral Blades", ok: false }], // Nightstalker
     "0XCF88FEA5": [{ value: 10, label: "Daybreak", ok: true }, { value: 20, label: "Well of Radiance", ok: false }], // Dawnblade
     "0X686A154A": [{ value: 10, label: "Stormtrance", ok: true }, { value: 20, label: "Chaos Reach", ok: false }], // Stormcaller
