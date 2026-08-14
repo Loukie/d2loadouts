@@ -190,9 +190,9 @@
     const note = document.createElement("div");
     note.className = "hint";
     note.style.marginBottom = "10px";
-    note.innerHTML = "Experimental — these pick your super/abilities by slot number. " +
-      "Bad numbers are safely ignored by the game. Change one, save, launch, and see what you get; " +
-      "tell me what a number does and I'll label it.";
+    note.innerHTML = "⚠️ Experimental. The default numbers already work — leave them unless you're hunting a specific super. " +
+      "Most other values <strong>break the character and drop you into a stuck loading screen</strong>. " +
+      "If that happens: Discard changes (or delete settings.json and relaunch) to recover.";
     panel.appendChild(note);
 
     for (const f of ABILITY_FIELDS) {
