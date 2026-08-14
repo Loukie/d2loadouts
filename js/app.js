@@ -191,9 +191,17 @@
       1: [{ value: 2, label: "Marksman's Dodge" }, { value: 3, label: "Gambler's Dodge" }],
       2: [{ value: 2, label: "Healing Rift" }, { value: 3, label: "Empowering Rift" }],
     },
+    movement_ability: {
+      0: [{ value: 4, label: "High Lift" }, { value: 5, label: "Strafe Lift" }, { value: 6, label: "Catapult Lift" }],
+      1: [{ value: 4, label: "High Jump" }, { value: 5, label: "Strafe Jump" }, { value: 6, label: "Triple Jump" }],
+      2: [{ value: 4, label: "Strafe Glide" }, { value: 5, label: "Burst Glide" }, { value: 6, label: "Balanced Glide" }],
+    },
   };
-  // Which preset lists are still guessed (order unverified) vs confirmed in-game.
-  const PRESET_CONFIRMED = { class_ability: { 0: true } };
+  // Which preset lists are confirmed in-game (vs best-guess order to verify).
+  const PRESET_CONFIRMED = {
+    class_ability: { 0: true },
+    movement_ability: { 0: true },
+  };
 
   function renderAbilitiesPanel(char) {
     const panel = document.createElement("div");
