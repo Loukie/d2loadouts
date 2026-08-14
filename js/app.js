@@ -248,7 +248,7 @@
       // 10 = the subclass's common super, 20 = its middle-tree super.
       "0XB0554739": [{ value: 10, label: "Fists of Havoc" }, { value: 20, label: "Thundercrash" }], // Striker
       "0XB920CE9A": [{ value: 10, label: "Hammer of Sol" }, { value: 20, label: "Burning Maul" }], // Sunbreaker
-      "0XC99B33E9": [{ value: 10, label: "Sentinel Shield" }, { value: 20, label: "Banner Shield" }], // Sentinel
+      "0XC99B33E9": [{ value: 10, label: "Ward of Dawn" }, { value: 20, label: "Banner Shield" }], // Sentinel (confirmed)
       "0XD8B8D1FC": [{ value: 10, label: "Golden Gun" }, { value: 20, label: "Blade Barrage" }], // Gunslinger
       "0X4F91DC97": [{ value: 10, label: "Arc Staff" }, { value: 20, label: "Whirlwind Guard" }], // Arcstrider
       "0XC0483D8B": [{ value: 10, label: "Shadowshot" }, { value: 20, label: "Spectral Blades" }], // Nightstalker
@@ -259,7 +259,7 @@
   };
   const SUBCLASS_PRESET_CONFIRMED = {
     grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true }, // + Sentinel
-    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true }, // Striker, Gunslinger, Sunbreaker confirmed
+    super_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true }, // + Sentinel
   };
 
   function subclassHashOf(char) {
