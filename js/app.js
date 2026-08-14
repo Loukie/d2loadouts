@@ -204,8 +204,8 @@
   };
   // Which per-class preset lists are confirmed in-game (vs best-guess order).
   const PRESET_CONFIRMED = {
-    class_ability: { 0: true, 1: true }, // Titan, Hunter confirmed
-    movement_ability: { 0: true, 1: true },
+    class_ability: { 0: true, 1: true, 2: true }, // Titan, Hunter, Warlock confirmed
+    movement_ability: { 0: true, 1: true, 2: true },
   };
 
   // Grenade/melee are element-specific, so they key off the subclass hash
@@ -234,8 +234,8 @@
       "0XC0483D8B": [ // Nightstalker (Hunter / Void) — confirmed in-game
         { value: 7, label: "Spike Grenade" }, { value: 8, label: "Vortex Grenade" }, { value: 9, label: "Voidwall Grenade" },
       ],
-      "0XCF88FEA5": [ // Dawnblade (Warlock / Solar)
-        { value: 7, label: "Solar Grenade" }, { value: 8, label: "Firebolt Grenade" }, { value: 9, label: "Fusion Grenade" },
+      "0XCF88FEA5": [ // Dawnblade (Warlock / Solar) — confirmed in-game
+        { value: 7, label: "Fusion Grenade" }, { value: 8, label: "Solar Grenade" }, { value: 9, label: "Firebolt Grenade" },
       ],
       "0X686A154A": [ // Stormcaller (Warlock / Arc)
         { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Pulse Grenade" }, { value: 9, label: "Storm Grenade" },
@@ -246,7 +246,7 @@
     },
   };
   const SUBCLASS_PRESET_CONFIRMED = {
-    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true, "0X4F91DC97": true, "0XC0483D8B": true }, // + Nightstalker
+    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true, "0X4F91DC97": true, "0XC0483D8B": true, "0XCF88FEA5": true }, // + Dawnblade
   };
 
   // Supers get their own map so the picker shows EVERY super by name and greys
@@ -261,7 +261,7 @@
     "0XD8B8D1FC": [{ value: 10, label: "Golden Gun", ok: true }, { value: 20, label: "Blade Barrage", ok: true }], // Gunslinger
     "0X4F91DC97": [{ value: 10, label: "Arc Staff", ok: true }, { value: null, label: "Whirlwind Guard", ok: false }], // Arcstrider (variant super — 20 breaks, index unknown)
     "0XC0483D8B": [{ value: 10, label: "Shadowshot", ok: true }, { value: 20, label: "Spectral Blades", ok: true }], // Nightstalker
-    "0XCF88FEA5": [{ value: 10, label: "Daybreak", ok: true }, { value: 20, label: "Well of Radiance", ok: false }], // Dawnblade
+    "0XCF88FEA5": [{ value: 10, label: "Daybreak", ok: true }, { value: 20, label: "Well of Radiance", ok: true }], // Dawnblade
     "0X686A154A": [{ value: 10, label: "Stormtrance", ok: true }, { value: 20, label: "Chaos Reach", ok: false }], // Stormcaller
     "0XE7BC88B0": [{ value: 10, label: "Nova Bomb", ok: true }, { value: 20, label: "Nova Warp", ok: false }], // Voidwalker
   };
