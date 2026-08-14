@@ -225,8 +225,8 @@
       "0XC99B33E9": [ // Sentinel (Titan / Void)
         { value: 7, label: "Magnetic Grenade" }, { value: 8, label: "Voidwall Grenade" }, { value: 9, label: "Suppressor Grenade" },
       ],
-      "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar)
-        { value: 7, label: "Incendiary Grenade" }, { value: 8, label: "Swarm Grenade" }, { value: 9, label: "Tripmine Grenade" },
+      "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar) — confirmed in-game
+        { value: 7, label: "Tripmine Grenade" }, { value: 8, label: "Swarm Grenade" }, { value: 9, label: "Incendiary Grenade" },
       ],
       "0X4F91DC97": [ // Arcstrider (Hunter / Arc)
         { value: 7, label: "Arcbolt Grenade" }, { value: 8, label: "Flux Grenade" }, { value: 9, label: "Skip Grenade" },
@@ -258,7 +258,7 @@
     },
   };
   const SUBCLASS_PRESET_CONFIRMED = {
-    grenade_ability: { "0XB0554739": true },
+    grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true }, // Striker, Gunslinger confirmed
     super_ability: { "0XB0554739": true }, // Striker confirmed; others best-guess (verify in-game)
   };
 
@@ -267,16 +267,20 @@
     return typeof h === "string" ? h.toUpperCase() : null;
   }
 
-  /** Returns { options, confirmed } for a field on this character, or null for a raw stepper. */
+  /**
+   * Returns { options, confirmed: true } only for a CONFIRMED mapping; otherwise
+   * null so the ability renders as a raw stepper. We never show an unverified
+   * name as the selected ability — that would misrepresent the real loadout.
+   */
   function resolvePreset(fieldKey, char) {
     const sub = subclassHashOf(char);
-    const bySub = sub && ABILITY_PRESETS_BY_SUBCLASS[fieldKey] && ABILITY_PRESETS_BY_SUBCLASS[fieldKey][sub];
-    if (bySub) {
-      return { options: bySub, confirmed: !!(SUBCLASS_PRESET_CONFIRMED[fieldKey] && SUBCLASS_PRESET_CONFIRMED[fieldKey][sub]) };
+    if (sub && ABILITY_PRESETS_BY_SUBCLASS[fieldKey] && ABILITY_PRESETS_BY_SUBCLASS[fieldKey][sub]
+        && SUBCLASS_PRESET_CONFIRMED[fieldKey] && SUBCLASS_PRESET_CONFIRMED[fieldKey][sub]) {
+      return { options: ABILITY_PRESETS_BY_SUBCLASS[fieldKey][sub], confirmed: true };
     }
-    const byClass = ABILITY_PRESETS[fieldKey] && ABILITY_PRESETS[fieldKey][char.class];
-    if (byClass) {
-      return { options: byClass, confirmed: !!(PRESET_CONFIRMED[fieldKey] && PRESET_CONFIRMED[fieldKey][char.class]) };
+    if (ABILITY_PRESETS[fieldKey] && ABILITY_PRESETS[fieldKey][char.class]
+        && PRESET_CONFIRMED[fieldKey] && PRESET_CONFIRMED[fieldKey][char.class]) {
+      return { options: ABILITY_PRESETS[fieldKey][char.class], confirmed: true };
     }
     return null;
   }
