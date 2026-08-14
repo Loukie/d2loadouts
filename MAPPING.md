@@ -44,7 +44,7 @@ Legend: ✅ confirmed in-game · ⚠️ best-guess (verify)
 | Subclass | 7 | 8 | 9 |
 | --- | --- | --- | --- |
 | Striker | Lightning ✅ | Flashbang ✅ | Pulse ✅ |
-| Sunbreaker | Incendiary ⚠️ | Fusion ⚠️ | Thermite ⚠️ |
+| Sunbreaker | Fusion ✅ | Incendiary ✅ | Thermite ✅ |
 | Sentinel | Magnetic ⚠️ | Voidwall ⚠️ | Suppressor ⚠️ |
 | Gunslinger | Tripmine ✅ | Incendiary ✅ | Swarm ✅ |
 | Arcstrider | Arcbolt ⚠️ | Flux ⚠️ | Skip ⚠️ |
