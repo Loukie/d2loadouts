@@ -188,10 +188,11 @@
   ];
   const ABILITY_MAX = 300;
 
-  // Testing suggests only the active tree loads, so super/melee are effectively
-  // tree-bound. Super is left editable (stepper) for further experimentation;
-  // melee stays locked (confirmed). Off-values break the boot.
-  const LOCKED_ABILITIES = new Set(["melee_ability"]);
+  // Super and melee are tree-bound: each attunement is a fixed (super, melee)
+  // pair, so they're set together by the Attunement picker (renderAttunementRow),
+  // not as independent fields. Both keys are handled there and skipped in the
+  // generic field loop.
+  const TREE_BOUND_ABILITIES = new Set(["super_ability", "melee_ability"]);
 
   // Confirmed index -> named option maps, discovered by in-game testing.
   // As we verify more (grenade/melee/jump/super), add them here and they turn
@@ -255,21 +256,64 @@
     grenade_ability: { "0XB0554739": true, "0XD8B8D1FC": true, "0XB920CE9A": true, "0XC99B33E9": true, "0X4F91DC97": true, "0XC0483D8B": true, "0XCF88FEA5": true, "0X686A154A": true, "0XE7BC88B0": true }, // + Voidwalker (ALL 9 done)
   };
 
-  // Supers get their own map so the picker shows EVERY super by name and greys
-  // out the ones whose safe index isn't verified yet (ok:false; value may be null
-  // when the index is unknown). value 10 = each subclass's default super and
-  // always boots. super=20 is NOT universal — it must be equip-tested per
-  // subclass (Sentinel's 20 breaks, so its extra supers are greyed out).
-  const SUPER_OPTIONS = {
-    "0XB0554739": [{ value: 10, label: "Fists of Havoc", ok: true }, { value: 20, label: "Thundercrash", ok: true }], // Striker
-    "0XB920CE9A": [{ value: 10, label: "Hammer of Sol", ok: true }, { value: 20, label: "Burning Maul", ok: true }], // Sunbreaker
-    "0XC99B33E9": [{ value: 10, label: "Ward of Dawn", ok: true }, { value: null, label: "Banner Shield", ok: false }, { value: null, label: "Sentinel Shield", ok: false }], // Sentinel (3 supers)
-    "0XD8B8D1FC": [{ value: 10, label: "Golden Gun", ok: true }, { value: 20, label: "Blade Barrage", ok: true }], // Gunslinger
-    "0X4F91DC97": [{ value: 10, label: "Arc Staff", ok: true }, { value: null, label: "Whirlwind Guard", ok: false }], // Arcstrider (variant super — 20 breaks, index unknown)
-    "0XC0483D8B": [{ value: 10, label: "Shadowshot", ok: true }, { value: 20, label: "Spectral Blades", ok: true }], // Nightstalker
-    "0XCF88FEA5": [{ value: 10, label: "Daybreak", ok: true }, { value: 20, label: "Well of Radiance", ok: true }], // Dawnblade
-    "0X686A154A": [{ value: 10, label: "Stormtrance", ok: true }, { value: 20, label: "Chaos Reach", ok: true }], // Stormcaller
-    "0XE7BC88B0": [{ value: 10, label: "Nova Bomb", ok: true }, { value: 20, label: "Nova Warp", ok: true }], // Voidwalker
+  // Attunement (tree) picker. Every subclass has 3 trees, and each tree is a
+  // fixed (super, melee) pair — same index skeleton across ALL subclasses
+  // (super 10/10/20, melee 11/15/21; only the names change), confirmed against
+  // the Shadowkeep game files via Sundial and verified in-game on 0.2 (all 3
+  // trees booted for Sunbreaker and Striker). Picking a tree sets BOTH the
+  // super and the melee together, exactly like the in-game subclass screen.
+  //
+  // ok:false marks the two trees whose SUPER is a "hold-to-guard" super that
+  // the 0.2 build can't load — Banner Shield (Sentinel) and Whirlwind Guard
+  // (Arcstrider). Index 20 is correct; 0.2 simply rejects those two supers
+  // (proven: super=20 breaks for Sentinel even with the safe melee 11, while
+  // it boots for every roaming super). Their other two trees work fine.
+  const ATTUNEMENTS_BY_SUBCLASS = {
+    "0XB0554739": [ // Striker (Titan / Arc)
+      { name: "Code of the Earthshaker", sup: 10, mel: 11, superName: "Fists of Havoc", meleeName: "Seismic Strike", ok: true },
+      { name: "Code of the Juggernaut", sup: 10, mel: 15, superName: "Fists of Havoc", meleeName: "Frontal Assault", ok: true },
+      { name: "Code of the Missile", sup: 20, mel: 21, superName: "Thundercrash", meleeName: "Ballistic Slam", ok: true },
+    ],
+    "0XB920CE9A": [ // Sunbreaker (Titan / Solar)
+      { name: "Code of the Fire-Forged", sup: 10, mel: 11, superName: "Hammer of Sol", meleeName: "Hammer Strike", ok: true },
+      { name: "Code of the Siegebreaker", sup: 10, mel: 15, superName: "Hammer of Sol", meleeName: "Mortar Blast", ok: true },
+      { name: "Code of the Devastator", sup: 20, mel: 21, superName: "Burning Maul", meleeName: "Throwing Hammer", ok: true },
+    ],
+    "0XC99B33E9": [ // Sentinel (Titan / Void)
+      { name: "Code of the Protector", sup: 10, mel: 11, superName: "Ward of Dawn", meleeName: "Defensive Strike", ok: true },
+      { name: "Code of the Aggressor", sup: 10, mel: 15, superName: "Ward of Dawn", meleeName: "Shield Bash", ok: true },
+      { name: "Code of the Commander", sup: 20, mel: 21, superName: "Banner Shield", meleeName: "Tactical Strike", ok: false },
+    ],
+    "0XD8B8D1FC": [ // Gunslinger (Hunter / Solar)
+      { name: "Way of the Outlaw", sup: 10, mel: 11, superName: "Golden Gun", meleeName: "Proximity Explosive Knife", ok: true },
+      { name: "Way of the Sharpshooter", sup: 10, mel: 15, superName: "Golden Gun", meleeName: "Weighted Knife", ok: true },
+      { name: "Way of a Thousand Cuts", sup: 20, mel: 21, superName: "Blade Barrage", meleeName: "Knife Trick", ok: true },
+    ],
+    "0X4F91DC97": [ // Arcstrider (Hunter / Arc)
+      { name: "Way of the Warrior", sup: 10, mel: 11, superName: "Arc Staff", meleeName: "Combination Blow", ok: true },
+      { name: "Way of the Wind", sup: 10, mel: 15, superName: "Arc Staff", meleeName: "Disorienting Blow", ok: true },
+      { name: "Way of the Current", sup: 20, mel: 21, superName: "Whirlwind Guard", meleeName: "Tempest Strike", ok: false },
+    ],
+    "0XC0483D8B": [ // Nightstalker (Hunter / Void)
+      { name: "Way of the Trapper", sup: 10, mel: 11, superName: "Shadowshot", meleeName: "Snare Bomb", ok: true },
+      { name: "Way of the Pathfinder", sup: 10, mel: 15, superName: "Shadowshot", meleeName: "Vanish in Smoke", ok: true },
+      { name: "Way of the Wraith", sup: 20, mel: 21, superName: "Spectral Blades", meleeName: "Corrosive Smoke", ok: true },
+    ],
+    "0XCF88FEA5": [ // Dawnblade (Warlock / Solar)
+      { name: "Attunement of Sky", sup: 10, mel: 11, superName: "Daybreak", meleeName: "Celestial Fire", ok: true },
+      { name: "Attunement of Flame", sup: 10, mel: 15, superName: "Daybreak", meleeName: "Igniting Touch", ok: true },
+      { name: "Attunement of Grace", sup: 20, mel: 21, superName: "Well of Radiance", meleeName: "Guiding Flame", ok: true },
+    ],
+    "0X686A154A": [ // Stormcaller (Warlock / Arc)
+      { name: "Attunement of Conduction", sup: 10, mel: 11, superName: "Stormtrance", meleeName: "Chain Lightning", ok: true },
+      { name: "Attunement of the Elements", sup: 10, mel: 15, superName: "Stormtrance", meleeName: "Rising Storm", ok: true },
+      { name: "Attunement of Control", sup: 20, mel: 21, superName: "Chaos Reach", meleeName: "Ball Lightning", ok: true },
+    ],
+    "0XE7BC88B0": [ // Voidwalker (Warlock / Void)
+      { name: "Attunement of Chaos", sup: 10, mel: 11, superName: "Nova Bomb", meleeName: "Entropic Pull", ok: true },
+      { name: "Attunement of Hunger", sup: 10, mel: 15, superName: "Nova Bomb", meleeName: "Devour", ok: true },
+      { name: "Attunement of Fission", sup: 20, mel: 21, superName: "Nova Warp", meleeName: "Atomic Breach", ok: true },
+    ],
   };
 
   function subclassHashOf(char) {
@@ -303,46 +347,85 @@
     const note = document.createElement("div");
     note.className = "hint";
     note.style.marginBottom = "10px";
-    note.innerHTML = "Mapped abilities are named pickers — choose freely. " +
+    note.innerHTML = "Pick an <strong>Attunement</strong> to set the super and melee together (that's how the game's trees work). " +
+      "Grenade, Jump and Class ability are separate named pickers. " +
       "Anything shown as a number stepper is unmapped: safe to experiment, but off-values can <strong>break the boot</strong> " +
-      "(if one hangs, Discard changes or delete settings.json and relaunch). Melee is 🔒 locked (tree-bound).";
+      "(if one hangs, Discard changes or delete settings.json and relaunch).";
     panel.appendChild(note);
 
+    panel.appendChild(renderAttunementRow(char));
+
     for (const f of ABILITY_FIELDS) {
-      if (f.key === "super_ability") { panel.appendChild(renderSuperRow(char, f)); continue; }
-      if (LOCKED_ABILITIES.has(f.key)) { panel.appendChild(renderLockedRow(char, f)); continue; }
+      if (TREE_BOUND_ABILITIES.has(f.key)) { continue; } // super + melee set by the attunement picker
       const preset = resolvePreset(f.key, char);
       panel.appendChild(preset ? renderPresetRow(char, f, preset.options, preset.confirmed) : renderStepperRow(char, f));
     }
     return panel;
   }
 
-  /** Super picker: every super named; unverified ones are greyed out (can't break the game). */
-  function renderSuperRow(char, f) {
-    const opts = SUPER_OPTIONS[subclassHashOf(char)];
-    if (!opts) { return renderStepperRow(char, f); }
-    const current = char[f.key];
+  /**
+   * Attunement (tree) picker. One button per tree; selecting it sets the super
+   * and melee together. Trees whose super can't load on 0.2 (the guard supers)
+   * are greyed. Below the buttons, a line shows the resulting Super / Melee.
+   */
+  function renderAttunementRow(char) {
+    const trees = ATTUNEMENTS_BY_SUBCLASS[subclassHashOf(char)];
+    const wrap = document.createElement("div");
+    wrap.style.marginBottom = "10px";
+
+    if (!trees) {
+      // Unknown subclass — fall back to raw steppers for super + melee.
+      wrap.appendChild(renderStepperRow(char, { key: "super_ability", label: "Super" }));
+      wrap.appendChild(renderStepperRow(char, { key: "melee_ability", label: "Melee" }));
+      return wrap;
+    }
+
     const row = document.createElement("div");
     row.style.cssText = "display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px";
-    const lbl = abilityLabel(f, char);
-    lbl.style.width = "150px";
+    const changed = state.changed.has(`${state.charIndex}:super_ability`) || state.changed.has(`${state.charIndex}:melee_ability`);
+    const lbl = document.createElement("div");
+    lbl.className = "slot-name";
+    lbl.style.cssText = "font-weight:600;width:150px";
+    lbl.innerHTML = "Attunement (tree)" + (changed ? ' <span class="badge">changed</span>' : "");
     row.appendChild(lbl);
-    for (const o of opts) {
+
+    for (const t of trees) {
       const btn = document.createElement("button");
-      btn.textContent = o.label;
-      if (o.ok && o.value !== null) {
-        btn.className = "tab" + (current === o.value ? " active" : "");
-        btn.onclick = () => setAbility(char, f.key, o.value);
+      btn.textContent = t.name;
+      const active = char.super_ability === t.sup && char.melee_ability === t.mel;
+      if (t.ok) {
+        btn.className = "tab" + (active ? " active" : "");
+        btn.title = `Super: ${t.superName} · Melee: ${t.meleeName}`;
+        btn.onclick = () => setAttunement(char, t);
       } else {
         btn.className = "tab";
         btn.disabled = true;
         btn.style.opacity = "0.4";
         btn.style.cursor = "not-allowed";
-        btn.title = "Index not verified yet — this one would break the game";
+        btn.title = `${t.superName} is a “guard” super the 0.2 build can't load — it breaks the game (works on the 0.1 build).`;
       }
       row.appendChild(btn);
     }
-    return row;
+    wrap.appendChild(row);
+
+    const cur = trees.find((t) => char.super_ability === t.sup && char.melee_ability === t.mel);
+    const detail = document.createElement("div");
+    detail.className = "hint";
+    detail.style.marginLeft = "158px";
+    detail.innerHTML = cur
+      ? `Super: <strong>${escapeHtml(cur.superName)}</strong> &nbsp;·&nbsp; Melee: <strong>${escapeHtml(cur.meleeName)}</strong>`
+      : `Super <code>${escapeHtml(String(char.super_ability))}</code> · Melee <code>${escapeHtml(String(char.melee_ability))}</code> — not a standard tree (pick one above)`;
+    wrap.appendChild(detail);
+    return wrap;
+  }
+
+  /** Set a whole attunement: super + melee together, then re-render once. */
+  function setAttunement(char, tree) {
+    char.super_ability = tree.sup;
+    char.melee_ability = tree.mel;
+    state.changed.add(`${state.charIndex}:super_ability`);
+    state.changed.add(`${state.charIndex}:melee_ability`);
+    renderSlots();
   }
 
   /** Read-only row for a tree-bound ability (super / melee) that can't be changed safely. */
